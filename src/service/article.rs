@@ -111,6 +111,13 @@ pub async fn update_article(bo: UpdateArticleBo, db: &mut DbConn) -> Result<(), 
         }
     };
 
+    // 若发布时间存在，且更新时间早于发布时间，则将更新时间同步为发布时间
+    if let Some(published_at) = article.published_at
+        && article.updated_at < published_at
+    {
+        article.updated_at = published_at;
+    }
+
     crate::storage::db::article::update(&article, db).await?;
     Ok(())
 }
