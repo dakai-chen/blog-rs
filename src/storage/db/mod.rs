@@ -16,7 +16,7 @@ pub type DbPool = sqlx::Pool<Db>;
 pub type DbConn = <Db as sqlx::Database>::Connection;
 pub type DbPoolConn = sqlx::pool::PoolConnection<Db>;
 
-pub fn build_pool(config: &DatabaseConfig) -> anyhow::Result<DbPool> {
+pub async fn build_pool(config: &DatabaseConfig) -> anyhow::Result<DbPool> {
     let mut conn_opts = config.url.parse::<SqliteConnectOptions>()?;
 
     conn_opts = conn_opts.journal_mode(SqliteJournalMode::Wal);
@@ -41,7 +41,7 @@ pub fn build_pool(config: &DatabaseConfig) -> anyhow::Result<DbPool> {
         pool_opts = pool_opts.acquire_slow_threshold(threshold);
     }
 
-    Ok(pool_opts.connect_lazy_with(conn_opts))
+    Ok(pool_opts.connect_with(conn_opts).await?)
 }
 
 /// 初始化数据库

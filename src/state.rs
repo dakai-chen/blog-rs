@@ -13,9 +13,9 @@ pub struct AppState {
 }
 
 impl AppState {
-    pub fn from_config(config: &AppConfig) -> anyhow::Result<Arc<Self>> {
+    pub async fn from_config(config: &AppConfig) -> anyhow::Result<Arc<Self>> {
         Ok(Arc::new(Self {
-            db: crate::storage::db::build_pool(&config.database)?,
+            db: crate::storage::db::build_pool(&config.database).await?,
             template: crate::template::build_template(&config.theme)?,
         }))
     }
