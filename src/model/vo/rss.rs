@@ -12,7 +12,7 @@ pub struct RssListItemVo {
     /// 标题
     pub title: String,
     /// 存储 Markdown 格式的正文
-    pub markdown_content: String,
+    pub markdown_content: Option<String>,
     /// 状态
     pub status: ArticleStatus,
     /// 创建时间
@@ -30,7 +30,7 @@ impl From<ArticleListItemBo> for RssListItemVo {
         Self {
             article_id: value.article_id,
             title: value.title,
-            markdown_content: value.markdown_content,
+            markdown_content: (!value.need_password).then_some(value.markdown_content),
             status: value.status,
             created_at: value.created_at,
             updated_at: value.updated_at,
