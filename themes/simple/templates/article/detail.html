@@ -1,6 +1,12 @@
 {% import "base/macros.html" as macros %}
 {% extends "base/base_admin.html" %}
 
+{% block meta %}
+{% if context.need_password %}
+<meta name="robots" content="noindex,nofollow">
+{% endif %}
+{% endblock meta %}
+
 {% block title %}{{ context.title }}{% endblock title %}
 
 {% block breadcrumb %}
