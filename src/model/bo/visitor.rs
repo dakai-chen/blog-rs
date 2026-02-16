@@ -1,10 +1,12 @@
-use std::time::Duration;
+use std::borrow::Cow;
+use std::net::IpAddr;
 
 use boluo::data::Extension;
 use boluo::extract::FromRequest;
 use boluo::request::Request;
 use serde::{Deserialize, Serialize};
 
+use crate::context::ip::ClientIP;
 use crate::context::visitor::VisitorId;
 use crate::error::{AppError, AppErrorMeta};
 use crate::model::co::article::VisitorArticleAccessPermitCo;
@@ -15,27 +17,18 @@ use crate::storage::cache::{Cache, CacheData};
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct VisitorBo {
     visitor: Cache<VisitorCo>,
+    ip: IpAddr,
 }
 
 impl VisitorBo {
-    pub const VISITOR_TTL: Duration = Duration::from_secs(3600 * 24 * 7);
-    pub const VISITOR_KEEP_THRESHOLD: Duration = Duration::from_secs(3600 * 24);
-
-    pub async fn create_and_cache() -> anyhow::Result<Self> {
-        let data = VisitorCo {
-            visitor_id: crate::util::uuid::v4(),
-        };
-        let visitor = data.with_ttl(Self::VISITOR_TTL);
-        visitor.set(CacheSetMode::OnlyIfNotExists).await?;
-        // 删除此访客残留的文章访问许可
-        Self::cleanup_article(&visitor.data.visitor_id).await?;
-        Ok(Self { visitor })
-    }
-
-    pub async fn from_cache(visitor_id: &str) -> anyhow::Result<Option<Self>> {
+    pub async fn from_cache(visitor_id: &str, ip: IpAddr) -> anyhow::Result<Option<Self>> {
         Ok(Cache::get(visitor_id)
             .await?
-            .map(|cache| Self { visitor: cache }))
+            .map(|visitor| Self { visitor, ip }))
+    }
+
+    pub fn ip(&self) -> IpAddr {
+        self.ip
     }
 
     pub fn visitor_id(&self) -> &str {
@@ -51,38 +44,21 @@ impl VisitorBo {
     }
 
     pub async fn add_article(&self, article_id: &str) -> anyhow::Result<()> {
-        let data = VisitorArticleAccessPermitCo {
-            visitor_id: self.visitor_id().into(),
-            article_id: article_id.into(),
-        };
-        let permit = data.with_ttl(crate::config::get().article.access_access_ttl);
-        permit.set(CacheSetMode::Overwrite).await?;
-        Ok(())
+        VisitorArticleAccessPermitBo::new(self.visitor_id())
+            .add_article(article_id)
+            .await
     }
 
     pub async fn has_article(&self, article_id: &str) -> anyhow::Result<bool> {
-        let data = VisitorArticleAccessPermitCo {
-            visitor_id: self.visitor_id().into(),
-            article_id: article_id.into(),
-        };
-        Cache::<VisitorArticleAccessPermitCo>::exists(data.generate_id().as_ref()).await
-    }
-
-    pub async fn keep(visitor_id: &str) -> anyhow::Result<bool> {
-        let Some(ttl) = Cache::<VisitorCo>::get_ttl(visitor_id).await? else {
-            return Ok(false);
-        };
-        if ttl <= Self::VISITOR_KEEP_THRESHOLD {
-            Cache::<VisitorCo>::set_ttl(visitor_id, Self::VISITOR_TTL).await
-        } else {
-            Ok(true)
-        }
-    }
-
-    async fn cleanup_article(visitor_id: &str) -> anyhow::Result<()> {
-        Cache::<VisitorArticleAccessPermitCo>::batch_remove(visitor_id)
+        VisitorArticleAccessPermitBo::new(self.visitor_id())
+            .has_article(article_id)
             .await
-            .map_err(From::from)
+    }
+
+    pub async fn clear_article(&self) -> anyhow::Result<()> {
+        VisitorArticleAccessPermitBo::new(self.visitor_id())
+            .clear_article()
+            .await
     }
 }
 
@@ -90,15 +66,59 @@ impl FromRequest for VisitorBo {
     type Error = AppError;
 
     async fn from_request(request: &mut Request) -> Result<Self, Self::Error> {
+        let ClientIP(ip) = ClientIP::from_request(request).await?;
         let Some(visitor) = Option::<Extension<VisitorId>>::from_request(request).await? else {
             return Err(AppErrorMeta::Internal.with_context("请求扩展中 VisitorId 不存在"));
         };
-        let Some(visitor) = VisitorBo::from_cache(visitor.visitor_id()).await? else {
+        let Some(visitor) = VisitorBo::from_cache(visitor.visitor_id(), ip).await? else {
             return Err(AppErrorMeta::Internal.with_context(format!(
                 "缓存中没有找到访客信息，访客ID: {}",
                 visitor.visitor_id()
             )));
         };
         Ok(visitor)
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct VisitorArticleAccessPermitBo<'a> {
+    visitor_id: Cow<'a, str>,
+}
+
+impl<'a> VisitorArticleAccessPermitBo<'a> {
+    pub fn new(visitor_id: &'a str) -> Self {
+        Self {
+            visitor_id: visitor_id.into(),
+        }
+    }
+
+    pub async fn add_article(&self, article_id: &str) -> anyhow::Result<()> {
+        let data = VisitorArticleAccessPermitCo {
+            visitor_id: self.visitor_id.as_ref().into(),
+            article_id: article_id.into(),
+        };
+        let permit = data.with_ttl(crate::config::get().article.access_access_ttl);
+        if !permit.set(CacheSetMode::Overwrite).await? {
+            return Err(anyhow::anyhow!(
+                "添加文章访问许可失败，缓存设置操作未成功执行。访客ID: {}, 文章ID: {}",
+                permit.data.visitor_id,
+                permit.data.article_id,
+            ));
+        }
+        Ok(())
+    }
+
+    pub async fn has_article(&self, article_id: &str) -> anyhow::Result<bool> {
+        let data = VisitorArticleAccessPermitCo {
+            visitor_id: self.visitor_id.as_ref().into(),
+            article_id: article_id.into(),
+        };
+        Cache::<VisitorArticleAccessPermitCo>::exists(data.generate_id().as_ref()).await
+    }
+
+    pub async fn clear_article(&self) -> anyhow::Result<()> {
+        Cache::<VisitorArticleAccessPermitCo>::batch_remove(&self.visitor_id)
+            .await
+            .map_err(From::from)
     }
 }

@@ -9,7 +9,6 @@ use boluo_extra::cookie::{Cookie, CookieJar, SameSite};
 use time::OffsetDateTime;
 
 use crate::error::{AppError, AppErrorMeta};
-use crate::model::bo::visitor::VisitorBo;
 use crate::util::time::UnixTimestampSecs;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -25,12 +24,12 @@ impl VisitorId {
     }
 
     async fn from_cookies(jar: &CookieJar) -> anyhow::Result<Self> {
-        let visitor = match jar.get(Self::COOKIE_KEY).map(|cookie| cookie.value()) {
-            Some(visitor_id) => crate::service::visitor::keep_or_create_visitor(visitor_id).await?,
-            None => crate::service::visitor::create_visitor().await?,
+        let visitor_id = match jar.get(Self::COOKIE_KEY).map(|cookie| cookie.value()) {
+            Some(visitor_id) => crate::service::visitor::keep_or_create(visitor_id).await?,
+            None => crate::service::visitor::create().await?,
         };
         Ok(VisitorId {
-            visitor_id: Arc::from(visitor.visitor_id()),
+            visitor_id: Arc::from(visitor_id),
         })
     }
 
@@ -49,7 +48,7 @@ impl VisitorId {
     fn cookie_expires_at() -> anyhow::Result<OffsetDateTime> {
         Ok(OffsetDateTime::from_unix_timestamp(
             UnixTimestampSecs::now()
-                .add(VisitorBo::VISITOR_TTL)
+                .add(crate::service::visitor::VISITOR_TTL)
                 .as_i64(),
         )?)
     }
