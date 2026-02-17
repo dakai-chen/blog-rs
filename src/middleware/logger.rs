@@ -1,10 +1,13 @@
 use std::time::Instant;
 
+use boluo::extract::FromRequest;
 use boluo::middleware::Middleware;
 use boluo::response::{IntoResponse, Response};
 use boluo::service::Service;
 use boluo::{BoxError, request::Request};
 use tracing::Instrument;
+
+use crate::context::ip::ClientIP;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Logger;
@@ -65,14 +68,17 @@ pub struct LoggerSpanService<S> {
 impl<S> Service<Request> for LoggerSpanService<S>
 where
     S: Service<Request>,
+    S::Error: Into<BoxError>,
 {
     type Response = S::Response;
-    type Error = S::Error;
+    type Error = BoxError;
 
-    async fn call(&self, request: Request) -> Result<Self::Response, Self::Error> {
-        let span = tracing::error_span!("HTTP", request_id = tracing::field::Empty);
+    async fn call(&self, mut request: Request) -> Result<Self::Response, Self::Error> {
+        let ClientIP(ip) = ClientIP::from_request(&mut request).await?;
+        let span = tracing::error_span!("HTTP", ip = %ip, request_id = tracing::field::Empty);
         span.in_scope(|| self.inner.call(request))
             .instrument(span)
             .await
+            .map_err(Into::into)
     }
 }
