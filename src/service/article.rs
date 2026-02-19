@@ -23,7 +23,7 @@ use crate::model::common::article::ArticleStatus;
 use crate::model::po::article::{ArticlePo, SearchArticle};
 use crate::model::po::article_attachment::ArticleAttachmentPo;
 use crate::model::po::article_stats::ArticleStatsPo;
-use crate::model::po::article_unlock_try_count::ArticleUnlockTryCountPo;
+use crate::model::po::article_unlock_attempts::ArticleUnlockAttemptsPo;
 use crate::model::po::resource::ResourcePo;
 use crate::storage::cache::storage::CacheSetMode;
 use crate::storage::cache::{Cache, CacheData, CacheIdGenerator};
@@ -65,7 +65,7 @@ pub async fn unlock_article(
 
     if bo.password != password {
         let now = UnixTimestampSecs::now();
-        let po = ArticleUnlockTryCountPo {
+        let po = ArticleUnlockAttemptsPo {
             ip: visitor.ip().to_string(),
             article_id: article.id,
             count: 1,
@@ -74,13 +74,13 @@ pub async fn unlock_article(
                 .add(crate::config::get().article.unlock_try_window)
                 .as_i64(),
         };
-        crate::storage::db::article_unlock_try_count::remove_single_expired(
+        crate::storage::db::article_unlock_attempts::remove_single_expired(
             &po.ip,
             &po.article_id,
             db,
         )
         .await?;
-        let count = crate::storage::db::article_unlock_try_count::incr_count(&po, db).await?;
+        let count = crate::storage::db::article_unlock_attempts::incr_count(&po, db).await?;
 
         // 计算剩余次数
         let remaining_times = crate::config::get()

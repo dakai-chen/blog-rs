@@ -1,11 +1,11 @@
-use crate::model::po::article_unlock_try_count::ArticleUnlockTryCountPo;
+use crate::model::po::article_unlock_attempts::ArticleUnlockAttemptsPo;
 use crate::storage::db::DbConn;
 use crate::util::time::UnixTimestampSecs;
 
-pub async fn incr_count(po: &ArticleUnlockTryCountPo, db: &mut DbConn) -> anyhow::Result<u32> {
+pub async fn incr_count(po: &ArticleUnlockAttemptsPo, db: &mut DbConn) -> anyhow::Result<u32> {
     sqlx::query_scalar(
         "
-        INSERT INTO article_unlock_try_count (
+        INSERT INTO article_unlock_attempts (
             `ip`,
             `article_id`,
             `count`,
@@ -33,7 +33,7 @@ pub async fn remove_single_expired(
     db: &mut DbConn,
 ) -> anyhow::Result<u64> {
     sqlx::query(
-        "DELETE FROM article_unlock_try_count WHERE ip = ? AND article_id = ? AND expires_at < ?",
+        "DELETE FROM article_unlock_attempts WHERE ip = ? AND article_id = ? AND expires_at < ?",
     )
     .bind(ip)
     .bind(article_id)
@@ -47,8 +47,8 @@ pub async fn remove_single_expired(
 pub async fn remove_all_expired(limit: u64, db: &mut DbConn) -> anyhow::Result<u64> {
     sqlx::query(
         "
-        DELETE FROM article_unlock_try_count WHERE rowid IN (
-            SELECT rowid FROM article_unlock_try_count WHERE expires_at < ? ORDER BY expires_at LIMIT ?
+        DELETE FROM article_unlock_attempts WHERE rowid IN (
+            SELECT rowid FROM article_unlock_attempts WHERE expires_at < ? ORDER BY expires_at LIMIT ?
         )
         ",
     )

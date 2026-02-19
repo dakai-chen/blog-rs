@@ -139,13 +139,13 @@ current_code_theme = "Solarized (light)"
 # ------------------------------------------------------------------------------
 # 定时任务配置
 # ------------------------------------------------------------------------------
-[cron.tasks.prune_db_table_cache]
+[cron.tasks.prune_cache]
 # 启用定时任务
 enabled = true
 # 日程表达式
 schedule = "*/30 * * * * *"
 
-[cron.tasks.prune_db_table_article_unlock_try_count]
+[cron.tasks.prune_article_unlock_attempts]
 # 启用定时任务
 enabled = true
 # 日程表达式

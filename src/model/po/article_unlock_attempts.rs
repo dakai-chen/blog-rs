@@ -1,6 +1,6 @@
 /// 文章解锁尝试次数统计
 #[derive(Debug, Clone, sqlx::FromRow)]
-pub struct ArticleUnlockTryCountPo {
+pub struct ArticleUnlockAttemptsPo {
     /// IP
     pub ip: String,
     /// 文章ID
