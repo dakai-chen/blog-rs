@@ -25,7 +25,7 @@
 .markdown h4,
 .markdown h5,
 .markdown h6 {
-    margin: 1rem 0;
+    margin: 1.25rem 0;
     font-weight: bold;
     color: #000;
     padding-left: 0.75rem;
@@ -79,7 +79,7 @@
 .markdown dl,
 .markdown pre,
 .markdown .table-box {
-    margin: 0.75rem 0;
+    margin: 1rem 0;
 }
 
 .markdown hr {
