@@ -17,8 +17,9 @@
 {% endblock breadcrumb %}
 
 {% block admin_menu %}
-<li><a href="/articles/{{ context.article_id }}/_update">编辑</a></li>
+<li><a href="javascript:void(0)" id="copy-share-link">分享</a></li>
 <li><a class="modal-open" href="javascript:void(0)" data-modal-target="#modal_upload_attachment">附件</a></li>
+<li><a href="/articles/{{ context.article_id }}/_update">编辑</a></li>
 <li><a class="modal-open" href="javascript:void(0)" data-modal-target="#modal_delete_article"
         data-modal-value="{{ context.article_id }}">删除</a></li>
 {% endblock admin_menu %}
@@ -117,6 +118,29 @@
         api_article_update_status(id, status, () => { window.location.reload() });
     }
 
-    document.addEventListener('DOMContentLoaded', init_code_copy_btn);
+    function copy_share_link() {
+        const copy_btn = document.getElementById('copy-share-link');
+
+        // 绑定点击事件
+        copy_btn.addEventListener('click', function () {
+            const article_id = "{{ context.article_id }}";
+            const base_url = window.location.origin;
+
+            let params = "{% if context.password %}pwd={{ context.password | urlencode_strict }}{% endif %}";
+            let share_link = `${base_url}/articles/${article_id}?${params}`;
+
+            // 调用浏览器原生剪贴板API复制内容
+            navigator.clipboard.writeText(share_link).then(() => {
+                tips_show("tips-item-success", "文章分享链接复制成功");
+            }).catch(err => {
+                tips_show("tips-item-error", "文章分享链接复制失败");
+            });
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        init_code_copy_btn();
+        copy_share_link();
+    });
 </script>
 {% endblock scripts %}
