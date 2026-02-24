@@ -8,7 +8,7 @@ function api_delete_article(id, callback) {
     };
     fetch(`/api/article/remove`, params)
         .then((response) => {
-            alert_error(response) && callback(response);
+            fetch_alert_error(response) && callback(response);
         })
         .catch((error) => {
             tips_show("tips-item-error", error);
@@ -25,7 +25,7 @@ function api_delete_attachment(data, callback) {
     };
     fetch(`/api/article/remove_attachment`, params)
         .then((response) => {
-            alert_error(response) && callback(response);
+            fetch_alert_error(response) && callback(response);
         })
         .catch((error) => {
             tips_show("tips-item-error", error);
@@ -35,55 +35,81 @@ function api_delete_attachment(data, callback) {
 async function api_upload_resource(name, file, callback) {
     const file_sha256 = await sha256(file);
 
-    const headers = new Headers();
-    headers.append('x-file-size', file.size.toString());
-    headers.append('x-file-name', encodeURIComponent(name));
-    headers.append('x-file-mime-type', file.type || 'application/octet-stream');
-    headers.append('x-file-sha256', file_sha256);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/resource/upload');
 
-    let params = {
-        method: "POST",
-        headers: headers,
-        body: file,
+    xhr.setRequestHeader('x-file-size', file.size.toString());
+    xhr.setRequestHeader('x-file-name', encodeURIComponent(name));
+    xhr.setRequestHeader('x-file-mime-type', file.type || 'application/octet-stream');
+    xhr.setRequestHeader('x-file-sha256', file_sha256);
+
+    xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+            callback.progress(event.loaded, event.total);
+        }
     };
-    fetch(`/api/resource/upload`, params)
-        .then((response) => {
-            alert_error(response) && callback(response);
-        })
-        .catch((error) => {
-            tips_show("tips-item-error", error);
-        });
+    xhr.onerror = (error) => {
+        tips_show("tips-item-error", error);
+    };
+    xhr.ontimeout = () => {
+        tips_show("tips-item-error", "上传超时，请重试");
+    };
+    xhr.onload = () => {
+        xhr_alert_error(xhr) && callback.success(xhr);
+    };
+
+    xhr.send(file);
 }
 
 async function api_upload_attachment(article_id, name, file, callback) {
     const file_sha256 = await sha256(file);
 
-    const headers = new Headers();
-    headers.append('x-article-id', article_id);
-    headers.append('x-file-size', file.size.toString());
-    headers.append('x-file-name', encodeURIComponent(name));
-    headers.append('x-file-mime-type', file.type || 'application/octet-stream');
-    headers.append('x-file-sha256', file_sha256);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/article/upload_attachment');
 
-    let params = {
-        method: "POST",
-        headers: headers,
-        body: file,
+    xhr.setRequestHeader('x-article-id', article_id);
+    xhr.setRequestHeader('x-file-size', file.size.toString());
+    xhr.setRequestHeader('x-file-name', encodeURIComponent(name));
+    xhr.setRequestHeader('x-file-mime-type', file.type || 'application/octet-stream');
+    xhr.setRequestHeader('x-file-sha256', file_sha256);
+
+    xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+            callback.progress(event.loaded, event.total);
+        }
     };
-    fetch(`/api/article/upload_attachment`, params)
-        .then((response) => {
-            alert_error(response) && callback(response);
-        })
-        .catch((error) => {
-            tips_show("tips-item-error", error);
-        });
+    xhr.onerror = (error) => {
+        tips_show("tips-item-error", error);
+    };
+    xhr.ontimeout = () => {
+        tips_show("tips-item-error", "上传超时，请重试");
+    };
+    xhr.onload = () => {
+        xhr_alert_error(xhr) && callback.success(xhr);
+    };
+
+    xhr.send(file);
 }
 
-function alert_error(response) {
+function fetch_alert_error(response) {
     if (response.status >= 400 && response.status <= 599) {
         response.json().then((data) => {
             tips_show("tips-item-error", data.message);
+        }).catch((error) => {
+            tips_show("tips-item-error", error);
         });
+        return false;
+    }
+    return true;
+}
+
+function xhr_alert_error(xhr) {
+    if (xhr.status >= 400 && xhr.status <= 599) {
+        try {
+            tips_show("tips-item-error", JSON.parse(xhr.responseText).data.message);
+        } catch {
+            tips_show("tips-item-error", xhr.responseText);
+        }
         return false;
     }
     return true;

@@ -101,15 +101,29 @@
         }
     });
 
-    modal_upload_attachment_register("#modal_upload_attachment", (modal, name, file) => {
-        api_upload_attachment("{{ context.article_id }}", name, file, (response) => {
-            response.json().then((data) => {
-                tips_show("tips-item-success", "附件上传成功");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+    modal_upload_attachment_register("#modal_upload_attachment", {
+        open: (modal) => {
+            let upload_btn = modal.querySelector(".modal-footer .confirm");
+            upload_btn.disabled = false;
+            upload_btn.textContent = `上传`;
+        },
+        confirm: (modal, name, file) => {
+            let upload_btn = modal.querySelector(".modal-footer .confirm");
+            upload_btn.disabled = true;
+
+            api_upload_attachment("{{ context.article_id }}", name, file, {
+                progress: (current, total) => {
+                    const percent = Math.round((current / total) * 100);
+                    upload_btn.textContent = `${percent}%`;
+                },
+                success: (xhr) => {
+                    tips_show("tips-item-success", "附件上传成功");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }
             });
-        });
+        }
     });
 
     function change_article_status(event) {

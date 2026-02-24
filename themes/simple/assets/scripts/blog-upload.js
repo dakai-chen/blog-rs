@@ -7,6 +7,8 @@ function modal_upload_file_register(target, callback) {
             file_input.value = "";
             name_input.value = "";
             path_input.value = "";
+
+            callback.open && callback.open(modal);
         },
         on_confirm: (modal, _) => {
             let file_input = modal.querySelector("input[name=file]");
@@ -17,7 +19,7 @@ function modal_upload_file_register(target, callback) {
             }
             let file = file_input.files[0];
 
-            callback(modal, name_input.value, file);
+            callback.confirm && callback.confirm(modal, name_input.value, file);
         },
     });
     let modals = document.querySelectorAll(target);
@@ -41,6 +43,8 @@ function modal_upload_attachment_register(target, callback) {
             let name_input = modal.querySelector("input[name=name]");
             file_input.value = "";
             name_input.value = "";
+
+            callback.open && callback.open(modal);
         },
         on_confirm: (modal, _) => {
             let file_input = modal.querySelector("input[name=file]");
@@ -51,7 +55,7 @@ function modal_upload_attachment_register(target, callback) {
             }
             let file = file_input.files[0];
 
-            callback(modal, name_input.value, file);
+            callback.confirm && callback.confirm(modal, name_input.value, file);
         },
     });
     let modals = document.querySelectorAll(target);

@@ -52,14 +52,28 @@
 {% block scripts %}
 {{ super() }}
 <script>
-    modal_upload_file_register("#modal_upload_file", (modal, name, file) => {
-        api_upload_resource(name, file, (response) => {
-            response.json().then((data) => {
-                tips_show("tips-item-success", "文件上传成功");
-                let path_input = modal.querySelector("input[name=path]");
-                path_input.value = data.data.url;
+    modal_upload_file_register("#modal_upload_file", {
+        open: (modal) => {
+            let upload_btn = modal.querySelector(".modal-footer .confirm");
+            upload_btn.disabled = false;
+            upload_btn.textContent = `上传`;
+        },
+        confirm: (modal, name, file) => {
+            let upload_btn = modal.querySelector(".modal-footer .confirm");
+            upload_btn.disabled = true;
+
+            api_upload_resource(name, file, {
+                progress: (current, total) => {
+                    const percent = Math.round((current / total) * 100);
+                    upload_btn.textContent = `${percent}%`;
+                },
+                success: (xhr) => {
+                    tips_show("tips-item-success", "文件上传成功");
+                    let path_input = modal.querySelector("input[name=path]");
+                    path_input.value = JSON.parse(xhr.responseText).data.url;
+                }
             });
-        });
+        }
     });
 </script>
 {% endblock scripts %}
