@@ -235,11 +235,11 @@
 
 .markdown pre .code-copy-btn {
     position: absolute;
-    top: 0.3125rem;
-    right: 0.5rem;
-    padding: 0.25rem 0.5rem;
+    top: 0.25rem;
+    right: 0.25rem;
+    padding: 0.25rem 0.25rem;
     border: none;
-    background-color: #54B4E8;
+    background-color: #3A8B6A;
     color: #fff;
     font-size: 0.875rem;
     cursor: pointer;
@@ -247,12 +247,19 @@
     transition: background-color 0.2s ease;
     display: none;
     z-index: 10;
+    align-items: center;
 }
 
 .markdown pre .code-copy-btn:hover {
-    background-color: #389CD8;
+    background-color: #469B7A;
 }
 
 .markdown pre:hover .code-copy-btn {
-    display: inline-block;
+    display: flex;
+    gap: 0.25rem;
+}
+
+.markdown pre .code-copy-btn img {
+    height: 0.875rem;
+    vertical-align: middle;
 }

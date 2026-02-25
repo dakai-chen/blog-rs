@@ -12,9 +12,17 @@ function init_code_copy_btn() {
         if (preBlock.querySelector('.code-copy-btn')) return;
 
         // 2. 创建复制按钮元素
+        const copyImg = document.createElement('img');
+        copyImg.src = "/theme/assets/image/copy.svg";
+
+        const copyTxt = document.createElement('span');
+        copyTxt.innerText = '复制';
+
         const copyBtn = document.createElement('button');
         copyBtn.className = 'code-copy-btn';
-        copyBtn.innerText = '复制'; // 按钮默认文字
+
+        copyBtn.appendChild(copyImg);
+        copyBtn.appendChild(copyTxt);
 
         // 3. 将按钮添加到代码块容器中
         preBlock.appendChild(copyBtn);
@@ -23,15 +31,14 @@ function init_code_copy_btn() {
         copyBtn.addEventListener('click', function () {
             // 5. 调用浏览器原生剪贴板API复制内容
             navigator.clipboard.writeText(codeBlock.textContent).then(() => {
-                // 复制成功：修改按钮文字提示
-                this.innerText = '复制成功';
-                // 1.5秒后恢复原文字
-                setTimeout(() => { this.innerText = '复制'; }, 1500);
+                // 复制成功：修改按钮
+                copyTxt.innerText = '复制成功';
+                setTimeout(() => { copyTxt.innerText = '复制'; }, 1000);
             }).catch(err => {
                 // 复制失败：捕获异常并提示（极少出现，一般是浏览器禁用剪贴板）
-                console.error('代码复制失败：', err);
-                this.innerText = '复制失败';
-                setTimeout(() => { this.innerText = '复制'; }, 1500);
+                tips_show("tips-item-error", `复制失败：${err}`);
+                copyTxt.innerText = '复制失败';
+                setTimeout(() => { copyTxt.innerText = '复制'; }, 1000);
             });
         });
     });

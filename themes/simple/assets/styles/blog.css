@@ -488,6 +488,7 @@ a.btn:active {
 .article .article-metadata-item img {
     height: 0.875rem;
     margin-right: 0.25rem;
+    vertical-align: middle;
 }
 
 .article .article-tags {
