@@ -428,20 +428,20 @@ a.btn:active {
     color: var(--blog-color-text-disabled);
 }
 
-.article-list>li>a:visited {
-    color: #7952d1;
-    background-color: transparent;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.article-list>li>a:visited:hover {
+.article-list>li>a:visited:not(.a-article-hide) {
     color: #462788;
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 
-.article-list>li>a:visited:active {
+.article-list>li>a:visited:hover:not(.a-article-hide) {
     color: #7952d1;
+    background-color: transparent;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.article-list>li>a:visited:active:not(.a-article-hide) {
+    color: #462788;
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
