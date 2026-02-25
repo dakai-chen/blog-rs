@@ -428,6 +428,24 @@ a.btn:active {
     color: var(--blog-color-text-disabled);
 }
 
+.article-list>li>a:visited {
+    color: #7952d1;
+    background-color: transparent;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.article-list>li>a:visited:hover {
+    color: #462788;
+    background-color: transparent;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.article-list>li>a:visited:active {
+    color: #7952d1;
+    background-color: transparent;
+    -webkit-tap-highlight-color: transparent;
+}
+
 /*******************************************************************************
  * 文章详情
  ******************************************************************************/
