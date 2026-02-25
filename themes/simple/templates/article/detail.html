@@ -142,8 +142,8 @@
             const article_id = "{{ context.article_id }}";
             const base_url = window.location.origin;
 
-            let params = "{% if context.password %}pwd={{ context.password | urlencode_strict }}{% endif %}";
-            let share_link = `${base_url}/articles/${article_id}?${params}`;
+            let params = "{% if context.password %}?pwd={{ context.password | urlencode_strict }}{% endif %}";
+            let share_link = `${base_url}/articles/${article_id}${params}`;
 
             // 调用浏览器原生剪贴板API复制内容
             navigator.clipboard.writeText(share_link).then(() => {
