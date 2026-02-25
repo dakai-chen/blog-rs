@@ -30,26 +30,26 @@ a {
 }
 
 a:link {
-    color: var(--blog-a-color);
-    background-color: var(--blog-a-color-bg);
+    color: var(--blog-a-normal-color);
+    background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 
 a:visited {
-    color: var(--blog-a-color);
-    background-color: var(--blog-a-color-bg);
+    color: var(--blog-a-normal-color);
+    background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 
 a:hover {
-    color: var(--blog-a-color-hover);
-    background-color: var(--blog-a-color-hover-bg);
+    color: var(--blog-a-normal-hover);
+    background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 
 a:active {
-    color: var(--blog-a-color);
-    background-color: var(--blog-a-color-bg);
+    color: var(--blog-a-normal-active);
+    background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -214,10 +214,9 @@ a.btn:active {
 }
 
 .breadcrumb>ol>li:last-child a {
-    --blog-a-color: var(--blog-color-text-disabled);
-    --blog-a-color-bg: transparent;
-    --blog-a-color-hover: var(--blog-color-text-disabled);
-    --blog-a-color-hover-bg: transparent;
+    --blog-a-normal-color: var(--blog-color-text-disabled);
+    --blog-a-normal-hover: var(--blog-color-text-disabled);
+    --blog-a-normal-active: var(--blog-color-text-disabled);
 
     pointer-events: none;
 }
@@ -429,19 +428,19 @@ a.btn:active {
 }
 
 .article-list>li>a:visited:not(.a-article-hide) {
-    color: #462788;
+    color: var(--blog-a-visited-color);
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 
 .article-list>li>a:visited:hover:not(.a-article-hide) {
-    color: #7952d1;
+    color: var(--blog-a-visited-hover);
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 
 .article-list>li>a:visited:active:not(.a-article-hide) {
-    color: #462788;
+    color: var(--blog-a-visited-active);
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
@@ -675,37 +674,6 @@ a.btn:active {
     to {
         transform: translateY(-8rem);
     }
-}
-
-/*******************************************************************************
- * 标签列表
- ******************************************************************************/
-
-.tags {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-}
-
-.tags li {
-    padding: 0.25rem 0.5rem;
-}
-
-/*******************************************************************************
- * 标签编辑
- ******************************************************************************/
-
-#modal_edit_tag .modal-main {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-#modal_edit_tag .modal-main>*:not(:last-child) {
-    margin-right: 0.375rem;
-}
-
-.edit-tag-name {
-    color: var(--blog-a-color);
 }
 
 /*******************************************************************************

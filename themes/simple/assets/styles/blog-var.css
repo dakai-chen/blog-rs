@@ -18,10 +18,17 @@
     /***************************************************************************
      * 超链接
      **************************************************************************/
-    --blog-a-color: #1976d2;
-    --blog-a-color-bg: transparent;
-    --blog-a-color-hover: #004ba0;
-    --blog-a-color-hover-bg: transparent;
+    --blog-a-normal-color: #0d6efd;
+    --blog-a-normal-hover: #013889;
+    --blog-a-normal-active: #0d6efd;
+
+    --blog-a-visited-color: #7c1cc4;
+    --blog-a-visited-hover: #4a0a75;
+    --blog-a-visited-active: #7c1cc4;
+
+    --blog-a-disabled-color: #4b5563;
+    --blog-a-disabled-hover: #2d3748;
+    --blog-a-disabled-active: #4b5563;
 
     /***************************************************************************
      * 错误提示框
@@ -72,10 +79,9 @@
 }
 
 .a-article-hide {
-    --blog-a-color: var(--blog-color-text-disabled);
-    --blog-a-color-bg: transparent;
-    --blog-a-color-hover: #6c757d;
-    --blog-a-color-hover-bg: transparent;
+    --blog-a-normal-color: var(--blog-a-disabled-color);
+    --blog-a-normal-hover: var(--blog-a-disabled-hover);
+    --blog-a-normal-active: var(--blog-a-disabled-active);
 }
 
 .tips-item-success {
