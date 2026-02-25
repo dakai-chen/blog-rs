@@ -263,3 +263,32 @@
     height: 0.875rem;
     vertical-align: middle;
 }
+
+/*******************************************************************************
+ * 滚动条
+ ******************************************************************************/
+
+.markdown pre>code::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.markdown pre>code::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 3px;
+}
+
+.markdown pre>code::-webkit-scrollbar-thumb {
+    background: #858585;
+    border-radius: 3px;
+    transition: background 0.2s ease;
+}
+
+.markdown pre>code::-webkit-scrollbar-thumb:hover {
+    background: #6d6d6d;
+}
+
+.markdown pre>code {
+    scrollbar-width: thin;
+    scrollbar-color: #858585 #f0f0f0;
+}
