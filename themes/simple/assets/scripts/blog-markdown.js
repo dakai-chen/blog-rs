@@ -30,7 +30,7 @@ function init_code_copy_btn() {
         // 4. 绑定按钮点击事件：核心复制逻辑
         copyBtn.addEventListener('click', function () {
             // 5. 调用浏览器原生剪贴板API复制内容
-            navigator.clipboard.writeText(codeBlock.textContent).then(() => {
+            navigator.clipboard.writeText(codeBlock.textContent.trim()).then(() => {
                 // 复制成功：修改按钮
                 copyTxt.innerText = '复制成功';
                 setTimeout(() => { copyTxt.innerText = '复制'; }, 1000);
