@@ -241,7 +241,7 @@
     right: 0.25rem;
     padding: 0.25rem 0.25rem;
     border: none;
-    background-color: #3A8B6A;
+    background-color: #858585;
     color: #fff;
     font-size: 0.875rem;
     cursor: pointer;
@@ -253,7 +253,7 @@
 }
 
 .markdown pre .code-copy-btn:hover {
-    background-color: #469B7A;
+    background-color: #6d6d6d;
 }
 
 .markdown pre:hover .code-copy-btn {
