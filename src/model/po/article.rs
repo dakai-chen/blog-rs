@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use crate::model::common::article::ArticleStatus;
+use crate::model::common::article::{ArticleStatus, SearchArticleSort};
 
 /// 文章
 #[derive(Debug, Clone, sqlx::FromRow)]
@@ -40,4 +40,6 @@ pub struct SearchArticle<'a> {
     pub published_at_lt: Option<i64>,
     /// 是否需要密码访问
     pub need_password: Option<bool>,
+    /// 排序方式
+    pub sort: SearchArticleSort,
 }

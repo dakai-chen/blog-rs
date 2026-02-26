@@ -29,6 +29,7 @@ impl<'a> Into<SearchArticleBo<'a>> for SearchArticleDto {
             published_at_lt: None,
             page: self.page,
             size: self.size,
+            sort: None,
         }
     }
 }
@@ -42,6 +43,7 @@ impl<'a> Into<SearchArticleBo<'a>> for &'a SearchArticleDto {
             published_at_lt: None,
             page: self.page,
             size: self.size,
+            sort: None,
         }
     }
 }

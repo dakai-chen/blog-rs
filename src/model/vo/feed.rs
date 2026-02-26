@@ -6,7 +6,7 @@ use crate::template::render::TemplateRenderData;
 
 /// 文章列表项
 #[derive(Debug, Clone, Serialize)]
-pub struct RssListItemVo {
+pub struct FeedListItemVo {
     /// 文章ID
     pub article_id: String,
     /// 标题
@@ -25,7 +25,7 @@ pub struct RssListItemVo {
     pub need_password: bool,
 }
 
-impl From<ArticleListItemBo> for RssListItemVo {
+impl From<ArticleListItemBo> for FeedListItemVo {
     fn from(value: ArticleListItemBo) -> Self {
         Self {
             article_id: value.article_id,
@@ -44,7 +44,7 @@ impl From<ArticleListItemBo> for RssListItemVo {
 #[derive(Debug, Clone, Serialize)]
 pub struct RssVo {
     /// 文章列表数据
-    pub items: Vec<RssListItemVo>,
+    pub items: Vec<FeedListItemVo>,
 }
 
 impl From<ArticleListBo> for RssVo {
@@ -54,7 +54,7 @@ impl From<ArticleListBo> for RssVo {
                 .data
                 .items
                 .into_iter()
-                .map(RssListItemVo::from)
+                .map(FeedListItemVo::from)
                 .collect(),
         }
     }
@@ -62,6 +62,41 @@ impl From<ArticleListBo> for RssVo {
 
 impl TemplateRenderData for RssVo {
     fn template_name() -> &'static str {
-        "rss.xml"
+        "feed/rss.xml"
+    }
+}
+
+/// Atom 页面
+#[derive(Debug, Clone, Serialize)]
+pub struct AtomVo {
+    /// 修改时间
+    pub updated_at: i64,
+    /// 文章列表数据
+    pub items: Vec<FeedListItemVo>,
+}
+
+impl From<ArticleListBo> for AtomVo {
+    fn from(value: ArticleListBo) -> Self {
+        Self {
+            updated_at: value
+                .data
+                .items
+                .iter()
+                .map(|item| item.updated_at)
+                .max()
+                .unwrap_or(0),
+            items: value
+                .data
+                .items
+                .into_iter()
+                .map(FeedListItemVo::from)
+                .collect(),
+        }
+    }
+}
+
+impl TemplateRenderData for AtomVo {
+    fn template_name() -> &'static str {
+        "feed/atom.xml"
     }
 }

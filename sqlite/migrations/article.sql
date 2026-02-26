@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS article (
 
 CREATE INDEX IF NOT EXISTS idx_published_at ON article (published_at DESC);
 CREATE INDEX IF NOT EXISTS idx_status_published_at ON article (status, published_at DESC);
+CREATE INDEX IF NOT EXISTS idx_updated_at ON article (updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_status_updated_at ON article (status, updated_at DESC);
 
 CREATE VIRTUAL TABLE IF NOT EXISTS article_fts USING fts5 (
     id UNINDEXED,

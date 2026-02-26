@@ -3,6 +3,7 @@ use std::fmt::Write;
 use sqlx::sqlite::SqliteArguments;
 use sqlx::{Arguments, AssertSqlSafe};
 
+use crate::model::common::article::SearchArticleSort;
 use crate::model::po::article::{ArticlePo, SearchArticle};
 use crate::storage::db::DbConn;
 use crate::util::pagination::Offset;
@@ -129,10 +130,13 @@ pub async fn search(
         writeln!(&mut sql, "WHERE {}", where_conditions.join(" AND "))?;
     }
 
+    let order = match params.sort {
+        SearchArticleSort::ByPublishedAtDesc => "published_at DESC NULLS FIRST, updated_at DESC",
+        SearchArticleSort::ByUpdatedAtDesc => "updated_at DESC NULLS FIRST",
+    };
+
     sqlx::query_as_with(
-        AssertSqlSafe(format!(
-            "{sql} ORDER BY published_at DESC NULLS FIRST, updated_at DESC LIMIT ? OFFSET ?"
-        )),
+        AssertSqlSafe(format!("{sql} ORDER BY {order} LIMIT ? OFFSET ?")),
         sql_params,
     )
     .bind(i64::try_from(offset.size)?)

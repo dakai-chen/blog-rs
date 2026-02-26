@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <!-- 频道级核心信息 -->
+    <title>{{ config.theme.extensions.title }}</title>
+    <link href="{{ config.theme.extensions.base_url }}" rel="alternate" type="text/html"/>
+    <!-- Atom 必需的唯一标识 -->
+    <id>{{ config.theme.extensions.base_url }}/atom.xml</id>
+    <!-- 更新时间 -->
+    <updated>{{ context.updated_at | date(format="%Y-%m-%dT%H:%M:%SZ", timezone="UTC") }}</updated>
+    <subtitle>{{ config.theme.extensions.rss_description }}</subtitle>
+
+    {% for article in context.items %}
+    <entry>
+        <!-- 文章唯一标识 -->
+        <id>urn:uuid:{{ article.article_id }}</id>
+        <title>{{ article.title }}</title>
+        <!-- 文章链接 -->
+        <link href="{{ config.theme.extensions.base_url }}/articles/{{ article.article_id }}" rel="alternate" type="text/html"/>
+        <!-- 文章内容 -->
+        <content type="html">
+            {% if not article.need_password %}
+            {{ article.markdown_content | markdown_to_html }}
+            {% else %}
+            {{ "🔒 文章内容需要解锁查看" }}
+            {% endif %}
+        </content>
+        <!-- 发布时间 -->
+        <published>{{ article.published_at | date(format="%Y-%m-%dT%H:%M:%SZ", timezone="UTC") }}</published>
+        <!-- 更新时间 -->
+        <updated>{{ article.updated_at | date(format="%Y-%m-%dT%H:%M:%SZ", timezone="UTC") }}</updated>
+    </entry>
+    {% endfor %}
+</feed>

@@ -126,6 +126,7 @@ impl<'a> Into<SearchArticleBo<'a>> for SearchArticleDto {
             published_at_lt: self.published_at_lt,
             page: self.page,
             size: self.size,
+            sort: None,
         }
     }
 }

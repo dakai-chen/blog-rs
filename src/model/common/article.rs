@@ -11,3 +11,11 @@ pub enum ArticleStatus {
     /// 发布
     Published,
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum SearchArticleSort {
+    /// 排序规则：published_at DESC NULLS FIRST, updated_at DESC
+    ByPublishedAtDesc,
+    /// 排序规则：updated_at DESC NULLS FIRST
+    ByUpdatedAtDesc,
+}

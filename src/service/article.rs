@@ -19,7 +19,7 @@ use crate::model::co::article::{
     ArticleUnlockBanCo, ArticleUnlockBanCoIdGen, VisitorArticleAccessRecordCo,
     VisitorArticleAccessRecordCoIdGen,
 };
-use crate::model::common::article::ArticleStatus;
+use crate::model::common::article::{ArticleStatus, SearchArticleSort};
 use crate::model::po::article::{ArticlePo, SearchArticle};
 use crate::model::po::article_attachment::ArticleAttachmentPo;
 use crate::model::po::article_stats::ArticleStatsPo;
@@ -225,6 +225,7 @@ pub async fn search_article(
         } else {
             None
         },
+        sort: bo.sort.unwrap_or(SearchArticleSort::ByPublishedAtDesc),
     };
 
     let items = crate::storage::db::article::search(&params, offset, db).await?;

@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::error::AppError;
 use crate::model::bo::resource::{ResourceBo, UploadResourceBo};
-use crate::model::common::article::ArticleStatus;
+use crate::model::common::article::{ArticleStatus, SearchArticleSort};
 use crate::model::po::article::ArticlePo;
 use crate::model::po::article_attachment::ArticleAttachmentPo;
 use crate::model::po::article_stats::ArticleStatsPo;
@@ -67,6 +67,8 @@ pub struct SearchArticleBo<'a> {
     pub page: Option<u64>,
     /// 分页大小
     pub size: Option<u64>,
+    /// 排序方式
+    pub sort: Option<SearchArticleSort>,
 }
 
 impl SearchArticleBo<'_> {
