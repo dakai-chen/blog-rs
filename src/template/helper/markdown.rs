@@ -65,7 +65,7 @@ fn markdown_options() -> Options<'static> {
     options.extension.footnotes = true;
     options.extension.math_code = true;
     options.extension.shortcodes = true;
-    options.extension.header_ids = Some("user-content-".to_owned());
+    options.extension.header_ids = Some(String::new());
 
     options.render.r#unsafe = true;
 

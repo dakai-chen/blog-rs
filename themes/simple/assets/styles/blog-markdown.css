@@ -28,8 +28,6 @@
     margin: 1.5rem 0;
     font-weight: bold;
     color: #000;
-    padding-left: 1rem;
-    position: relative;
     line-height: 1.25;
 }
 
@@ -57,19 +55,39 @@
     font-size: 1rem;
 }
 
-.markdown h1::before,
-.markdown h2::before,
-.markdown h3::before,
-.markdown h4::before,
-.markdown h5::before,
-.markdown h6::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 0.25rem;
-    background-color: #2563EB;
+.markdown h1 .anchor::before,
+.markdown h2 .anchor::before,
+.markdown h3 .anchor::before,
+.markdown h4 .anchor::before,
+.markdown h5 .anchor::before,
+.markdown h6 .anchor::before {
+    color: #2563EB;
+    padding-right: 0.75rem;
+    font-weight: bold;
+}
+
+.markdown h1 .anchor::before {
+    content: '#';
+}
+
+.markdown h2 .anchor::before {
+    content: '##';
+}
+
+.markdown h3 .anchor::before {
+    content: '###';
+}
+
+.markdown h4 .anchor::before {
+    content: '####';
+}
+
+.markdown h5 .anchor::before {
+    content: '#####';
+}
+
+.markdown h6 .anchor::before {
+    content: '######';
 }
 
 .markdown p,
