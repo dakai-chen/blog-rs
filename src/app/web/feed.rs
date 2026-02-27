@@ -29,7 +29,7 @@ pub async fn rss(
     let list = crate::service::article::search_article(None, &params, &mut db).await?;
     let vo = RssVo::from(list);
     let context = PageContext::new(vo).admin(None);
-    let headers = [(CONTENT_TYPE, "application/rss+xml; charset=utf-8")];
+    let headers = [(CONTENT_TYPE, "application/xml; charset=utf-8")];
     Ok((headers, state.template.typed_render(&context)))
 }
 
@@ -50,6 +50,6 @@ pub async fn atom(
     let list = crate::service::article::search_article(None, &params, &mut db).await?;
     let vo = AtomVo::from(list);
     let context = PageContext::new(vo).admin(None);
-    let headers = [(CONTENT_TYPE, "application/atom+xml; charset=utf-8")];
+    let headers = [(CONTENT_TYPE, "application/xml; charset=utf-8")];
     Ok((headers, state.template.typed_render(&context)))
 }
