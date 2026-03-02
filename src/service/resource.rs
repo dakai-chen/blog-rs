@@ -212,10 +212,11 @@ impl TempFileGuard {
         // 原子创建文件，防止覆盖原有的文件
         let f = File::create_new(to).await.map(|_| TempFileGuard::new(to))?;
         // 尝试移动文件
-        if tokio::fs::rename(&self.path, to).await.is_err() {
-            tokio::fs::copy(&self.path, to).await?;
-        } else {
+        if tokio::fs::rename(&self.path, to).await.is_ok() {
+            // 如果移动成功，原文件就不存在了，就不需要删除了
             TempFileGuard::keep(self);
+        } else {
+            tokio::fs::copy(&self.path, to).await?;
         }
         Ok(f)
     }
