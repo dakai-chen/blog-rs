@@ -32,6 +32,8 @@ impl ResourcePath {
             .strip_prefix(&crate::config::get().resource.upload_dir)
             .ok_or_else(|| anyhow::anyhow!("资源路径不在上传目录内：{absolute_path}"))?;
 
+        let relative_path = relative_path.strip_prefix("/").unwrap_or(relative_path);
+
         Ok(Self {
             relative_path: relative_path.to_owned(),
             absolute_path,
