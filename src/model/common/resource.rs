@@ -1,8 +1,17 @@
+use std::sync::LazyLock;
+
 use sqlx::Database;
 use sqlx::encode::IsNull;
 use sqlx::error::BoxDynError;
 
 use crate::storage::db::Db;
+use crate::util::path::PathJoin;
+
+static NORMALIZE_SEP_UPLOAD_DIR: LazyLock<String> = LazyLock::new(|| {
+    let dir = &crate::config::get().resource.upload_dir;
+    let dir = crate::util::path::normalize_sep(dir);
+    dir.trim_end_matches('/').to_owned()
+});
 
 /// 资源路径工具类
 #[derive(Debug, Clone)]
@@ -14,9 +23,9 @@ pub struct ResourcePath {
 }
 
 impl ResourcePath {
-    pub fn from_relative(relative_path: impl Into<String>) -> anyhow::Result<Self> {
-        let relative_path = relative_path.into();
-        let absolute_path = crate::util::path::root(&crate::config::get().resource.upload_dir)
+    pub fn from_relative(relative_path: &str) -> anyhow::Result<Self> {
+        let relative_path = crate::util::path::normalize_sep(relative_path).into_owned();
+        let absolute_path = PathJoin::root(NORMALIZE_SEP_UPLOAD_DIR.as_str())
             .join(&relative_path)
             .into_string();
 
@@ -26,13 +35,15 @@ impl ResourcePath {
         })
     }
 
-    pub fn from_absolute(absolute_path: impl Into<String>) -> anyhow::Result<Self> {
-        let absolute_path = absolute_path.into();
+    pub fn from_absolute(absolute_path: &str) -> anyhow::Result<Self> {
+        let absolute_path = crate::util::path::normalize_sep(absolute_path).into_owned();
         let relative_path = absolute_path
-            .strip_prefix(&crate::config::get().resource.upload_dir)
+            .strip_prefix(NORMALIZE_SEP_UPLOAD_DIR.as_str())
             .ok_or_else(|| anyhow::anyhow!("资源路径不在上传目录内：{absolute_path}"))?;
 
-        let relative_path = relative_path.strip_prefix("/").unwrap_or(relative_path);
+        let relative_path = relative_path
+            .strip_prefix('/')
+            .ok_or_else(|| anyhow::anyhow!("资源路径不在上传目录内：{absolute_path}"))?;
 
         Ok(Self {
             relative_path: relative_path.to_owned(),
@@ -68,7 +79,7 @@ impl sqlx::Encode<'_, Db> for ResourcePath {
 
 impl sqlx::Decode<'_, Db> for ResourcePath {
     fn decode(value: <Db as Database>::ValueRef<'_>) -> Result<Self, BoxDynError> {
-        ResourcePath::from_relative(<String as sqlx::Decode<Db>>::decode(value)?)
+        ResourcePath::from_relative(&<String as sqlx::Decode<Db>>::decode(value)?)
             .map_err(From::from)
     }
 }

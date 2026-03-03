@@ -2,10 +2,10 @@ use std::sync::Arc;
 
 use crate::state::AppState;
 
-pub async fn prune_article_unlock_attempts(state: Arc<AppState>) -> anyhow::Result<()> {
-    /// 每次清理数据的条数上限
-    const PRUNE_LIMIT: u64 = 100;
+/// 每次清理数据的条数上限
+const PRUNE_LIMIT: u64 = 100;
 
+pub async fn prune_article_unlock_attempts(state: Arc<AppState>) -> anyhow::Result<()> {
     let mut db = state.db.acquire().await?;
     loop {
         let rows =
@@ -16,6 +16,5 @@ pub async fn prune_article_unlock_attempts(state: Arc<AppState>) -> anyhow::Resu
             break;
         }
     }
-
     Ok(())
 }

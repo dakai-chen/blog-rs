@@ -4,6 +4,8 @@ use std::{net::IpAddr, sync::OnceLock};
 
 use serde::{Deserialize, Deserializer, Serialize};
 
+use crate::util::path::PathJoin;
+
 /// 全局应用程序配置
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct AppConfig {
@@ -278,7 +280,7 @@ pub struct CurrentThemeConfig {
 
 impl CurrentThemeConfig {
     pub fn from_theme(dir: &str, name: &str) -> Self {
-        let base = crate::util::path::root(dir).join(name);
+        let base = PathJoin::root(dir).join(name);
         Self {
             assets_dir: base.clone().join("assets").into_string(),
             templates_dir: base.clone().join("templates").into_string(),

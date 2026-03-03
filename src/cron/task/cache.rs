@@ -2,10 +2,10 @@ use std::sync::Arc;
 
 use crate::state::AppState;
 
-pub async fn prune_cache(state: Arc<AppState>) -> anyhow::Result<()> {
-    /// 每次清理数据的条数上限
-    const PRUNE_LIMIT: u64 = 100;
+/// 每次清理数据的条数上限
+const PRUNE_LIMIT: u64 = 100;
 
+pub async fn prune_cache(state: Arc<AppState>) -> anyhow::Result<()> {
     let mut db = state.db.acquire().await?;
     loop {
         let rows = crate::storage::db::cache::remove_all_expired(PRUNE_LIMIT, &mut db).await?;
@@ -14,6 +14,5 @@ pub async fn prune_cache(state: Arc<AppState>) -> anyhow::Result<()> {
             break;
         }
     }
-
     Ok(())
 }

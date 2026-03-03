@@ -11,6 +11,7 @@ use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode, SqlitePoolOptions};
 use sqlx::{Acquire, AssertSqlSafe, Transaction};
 
 use crate::config::DatabaseConfig;
+use crate::util::path::PathJoin;
 
 pub type Db = sqlx::Sqlite;
 pub type DbPool = sqlx::Pool<Db>;
@@ -82,7 +83,7 @@ fn file_name_ends_with(path: &Path, extension: &str) -> bool {
 #[cfg(unix)]
 fn sqlite_extensions(config: &DatabaseConfig) -> Vec<String> {
     vec![
-        crate::util::path::root(&config.sqlite.extensions_dir)
+        PathJoin::root(&config.sqlite.extensions_dir)
             .join("libsimple/linux/libsimple")
             .into_string(),
     ]
@@ -91,7 +92,7 @@ fn sqlite_extensions(config: &DatabaseConfig) -> Vec<String> {
 #[cfg(not(unix))]
 fn sqlite_extensions(config: &DatabaseConfig) -> Vec<String> {
     vec![
-        crate::util::path::root(&config.sqlite.extensions_dir)
+        PathJoin::root(&config.sqlite.extensions_dir)
             .join("libsimple/windows/simple")
             .into_string(),
     ]

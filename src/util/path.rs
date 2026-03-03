@@ -1,8 +1,7 @@
-/// 路径分隔符
-const SEP: char = '/';
+use std::borrow::Cow;
 
 pub fn is_safe(path: &str) -> bool {
-    for seg in path.split(SEP) {
+    for seg in path.split('/') {
         if seg.starts_with("..") {
             return false;
         } else if seg.contains('\\') {
@@ -14,45 +13,55 @@ pub fn is_safe(path: &str) -> bool {
     true
 }
 
-pub fn root(root: impl Into<String>) -> Root {
-    Root::from(root)
+pub fn extension(name: &str) -> &str {
+    name.rsplit_once(".").map_or_else(|| "", |(_, v)| v)
+}
+
+/// 规范化路径分隔符：将所有反斜杠 `\` 替换为正斜杠 `/`
+pub fn normalize_sep(path: &str) -> Cow<'_, str> {
+    if path.contains('\\') {
+        path.replace('\\', "/").into()
+    } else {
+        path.into()
+    }
 }
 
 #[derive(Debug, Clone)]
-pub struct Root(String);
+pub struct PathJoin {
+    root: String,
+}
 
-impl Root {
-    pub fn new() -> Self {
-        Self(String::new())
-    }
-
-    pub fn from(root: impl Into<String>) -> Self {
-        Self(root.into())
+impl PathJoin {
+    pub fn root(root: impl Into<String>) -> Self {
+        Self { root: root.into() }
     }
 
     pub fn join<T: AsRef<str>>(mut self, src: T) -> Self {
-        let src = src.as_ref();
-        let src = if src.starts_with(SEP) { &src[1..] } else { src };
+        let src = PathJoin::trim_start_sep(src.as_ref());
 
-        if !self.0.is_empty() && !self.0.ends_with(SEP) {
-            self.0.push(SEP);
+        if !self.root.is_empty() && !PathJoin::ends_with_sep(&self.root) {
+            self.root.push('/');
         }
 
-        self.0.push_str(src);
+        self.root.push_str(src);
         self
     }
 
     pub fn into_string(self) -> String {
-        self.0
+        self.root
+    }
+
+    fn trim_start_sep(path: &str) -> &str {
+        path.trim_start_matches(|c| c == '/' || c == '\\')
+    }
+
+    fn ends_with_sep(path: &str) -> bool {
+        path.ends_with('/') || path.ends_with('\\')
     }
 }
 
-impl std::fmt::Display for Root {
+impl std::fmt::Display for PathJoin {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(&self.0)
+        f.write_str(&self.root)
     }
-}
-
-pub fn extension(name: &str) -> &str {
-    name.rsplit_once(".").map_or_else(|| "", |(_, v)| v)
 }

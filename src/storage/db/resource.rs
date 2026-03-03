@@ -118,10 +118,10 @@ pub async fn count_by_path(path: &str, db: &mut DbConn) -> anyhow::Result<u64> {
         .map_err(From::from)
 }
 
-pub async fn list_by_ids(
-    ids: &[impl AsRef<str>],
-    db: &mut DbConn,
-) -> anyhow::Result<Vec<ResourcePo>> {
+pub async fn list_by_ids<Id>(ids: &[Id], db: &mut DbConn) -> anyhow::Result<Vec<ResourcePo>>
+where
+    Id: AsRef<str>,
+{
     if ids.is_empty() {
         return Ok(vec![]);
     }
@@ -129,18 +129,22 @@ pub async fn list_by_ids(
     let mut sql = String::new();
     let mut sql_params = SqliteArguments::default();
 
-    let placeholders = std::iter::repeat_n("?", ids.len())
+    let binders = std::iter::repeat_n("?", ids.len())
         .collect::<Vec<_>>()
         .join(", ");
-    writeln!(
-        &mut sql,
-        "SELECT * FROM resource WHERE id IN ({placeholders})",
-    )?;
+    writeln!(&mut sql, "SELECT * FROM resource WHERE id IN ({binders})",)?;
     for id in ids {
         sql_params.add(id.as_ref()).anyhow()?;
     }
 
     sqlx::query_as_with(AssertSqlSafe(sql), sql_params)
+        .fetch_all(db)
+        .await
+        .map_err(From::from)
+}
+
+pub async fn all(db: &mut DbConn) -> anyhow::Result<Vec<ResourcePo>> {
+    sqlx::query_as("SELECT * FROM resource")
         .fetch_all(db)
         .await
         .map_err(From::from)

@@ -1,6 +1,6 @@
 pub mod serde;
 
-use std::time::Duration;
+use std::time::{Duration, SystemTime};
 
 use ::serde::{Deserialize, Serialize};
 use jiff::{Timestamp, Zoned, civil::Time, tz::TimeZone};
@@ -12,6 +12,16 @@ pub struct UnixTimestampSecs(i64);
 impl UnixTimestampSecs {
     pub fn new(secs: i64) -> Self {
         Self(secs)
+    }
+
+    pub fn from_system_time(ts: SystemTime) -> Option<Self> {
+        let timestamp = match ts.duration_since(std::time::UNIX_EPOCH) {
+            Ok(dur) => i64::try_from(dur.as_secs()).ok(),
+            Err(err) => i64::try_from(err.duration().as_secs())
+                .ok()
+                .and_then(|v| v.checked_neg()),
+        };
+        timestamp.map(Self)
     }
 
     pub fn as_i64(self) -> i64 {

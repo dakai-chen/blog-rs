@@ -6,16 +6,17 @@ use tera::{Context, Tera};
 
 use crate::config::ThemeConfig;
 use crate::template::render::{PageContext, TemplateRenderData};
+use crate::util::path::PathJoin;
 
 pub fn build_template(config: &ThemeConfig) -> anyhow::Result<TemplateEngine> {
     let default = Tera::parse(
-        &crate::util::path::root(&config.current().templates_dir)
+        &PathJoin::root(&config.current().templates_dir)
             .join("**/*")
             .into_string(),
     )?;
 
     let mut custom = Tera::parse(
-        &crate::util::path::root(&config.custom_template_dir)
+        &PathJoin::root(&config.custom_template_dir)
             .join("**/*")
             .into_string(),
     )?;

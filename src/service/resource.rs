@@ -16,6 +16,7 @@ use crate::model::bo::resource::{
 use crate::model::common::resource::ResourcePath;
 use crate::model::po::resource::ResourcePo;
 use crate::storage::db::DbConn;
+use crate::util::path::PathJoin;
 use crate::util::time::UnixTimestampSecs;
 
 /// 删除资源文件
@@ -86,7 +87,7 @@ pub async fn upload_resource_with_options(
         None => {
             let path = generate_storage_path();
             let file = temp_file.move_to(&path).await?;
-            (Some(file), ResourcePath::from_absolute(path)?)
+            (Some(file), ResourcePath::from_absolute(&path)?)
         }
     };
 
@@ -171,7 +172,7 @@ where
 /// 生成文件存储路径
 fn generate_storage_path() -> String {
     let file_name = crate::util::uuid::v4();
-    crate::util::path::root(&crate::config::get().resource.upload_dir)
+    PathJoin::root(&crate::config::get().resource.upload_dir)
         .join(file_name.get(0..2).unwrap())
         .join(file_name.get(2..4).unwrap())
         .join(file_name)
