@@ -182,6 +182,8 @@ pub struct ResourceConfig {
     /// 上传文件的大小限制
     #[serde(with = "crate::util::serde::human_size")]
     pub upload_file_max_size: u64,
+    /// 回收站目录
+    pub trash_dir: String,
     /// 公开文件的存储目录
     pub public_dir: String,
 }

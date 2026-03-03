@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -7,6 +8,7 @@ use walkdir::WalkDir;
 use crate::model::common::resource::ResourcePath;
 use crate::model::po::resource::ResourcePo;
 use crate::state::AppState;
+use crate::util::path::PathJoin;
 use crate::util::time::UnixTimestampSecs;
 
 pub async fn purge_orphaned_resources(state: Arc<AppState>) -> anyhow::Result<()> {
@@ -63,8 +65,8 @@ fn purge(resources: Vec<ResourcePo>) -> u64 {
             }
         };
         if !resources.contains(path.relative()) {
-            if let Err(e) = std::fs::remove_file(path.absolute()) {
-                tracing::warn!("文件删除失败，路径：{}，错误：{e}", path.absolute());
+            if let Err(e) = move_to_trash(&path) {
+                tracing::warn!("清理文件失败，路径：{}，错误：{e}", path.absolute());
             } else {
                 count += 1;
             }
@@ -72,4 +74,14 @@ fn purge(resources: Vec<ResourcePo>) -> u64 {
     }
 
     count
+}
+
+pub fn move_to_trash(path: &ResourcePath) -> Result<(), std::io::Error> {
+    let to = PathJoin::root(&crate::config::get().resource.trash_dir)
+        .join(path.relative())
+        .into_string();
+    if let Some(dir) = Path::new(&to).parent() {
+        std::fs::create_dir_all(dir)?;
+    }
+    std::fs::rename(path.absolute(), &to)
 }
