@@ -5,23 +5,36 @@ use std::time::Duration;
 use walkdir::WalkDir;
 
 use crate::model::common::resource::ResourcePath;
+use crate::model::po::resource::ResourcePo;
 use crate::state::AppState;
 use crate::util::time::UnixTimestampSecs;
 
 pub async fn purge_orphaned_resources(state: Arc<AppState>) -> anyhow::Result<()> {
-    let time_threshold = UnixTimestampSecs::now().sub(Duration::from_secs(600));
-
     let resources = {
         let mut db = state.db.acquire().await?;
         let resources = crate::storage::db::resource::all(&mut db).await?;
         resources
     };
+
+    let f = move || purge(resources);
+    let span = tracing::Span::current();
+    let task = tokio::task::spawn_blocking(move || span.in_scope(f));
+
+    let count = task.await?;
+
+    tracing::info!("清理孤立资源文件 {count} 个");
+
+    Ok(())
+}
+
+fn purge(resources: Vec<ResourcePo>) -> u64 {
+    let time_threshold = UnixTimestampSecs::now().sub(Duration::from_secs(600));
+    let mut count: u64 = 0;
+
     let resources = resources
         .iter()
         .map(|r| r.path.relative())
         .collect::<HashSet<_>>();
-
-    let mut count: u64 = 0;
 
     for entry in WalkDir::new(&crate::config::get().resource.upload_dir)
         .into_iter()
@@ -58,7 +71,5 @@ pub async fn purge_orphaned_resources(state: Arc<AppState>) -> anyhow::Result<()
         }
     }
 
-    tracing::info!("清理孤立资源文件 {count} 个");
-
-    Ok(())
+    count
 }
