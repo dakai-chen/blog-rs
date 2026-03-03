@@ -3,10 +3,10 @@ use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
+use tracing::Span;
 use walkdir::WalkDir;
 
 use crate::model::common::resource::ResourcePath;
-use crate::model::po::resource::ResourcePo;
 use crate::state::AppState;
 use crate::util::path::PathJoin;
 use crate::util::time::UnixTimestampSecs;
@@ -16,10 +16,13 @@ pub async fn purge_orphaned_resources(state: Arc<AppState>) -> anyhow::Result<()
         let mut db = state.db.acquire().await?;
         let resources = crate::storage::db::resource::all(&mut db).await?;
         resources
+            .into_iter()
+            .map(|r| r.path.into_relative())
+            .collect::<HashSet<_>>()
     };
 
     let f = move || purge(resources);
-    let span = tracing::Span::current();
+    let span = Span::current();
     let task = tokio::task::spawn_blocking(move || span.in_scope(f));
 
     let count = task.await?;
@@ -29,14 +32,9 @@ pub async fn purge_orphaned_resources(state: Arc<AppState>) -> anyhow::Result<()
     Ok(())
 }
 
-fn purge(resources: Vec<ResourcePo>) -> u64 {
+fn purge(resources: HashSet<String>) -> u64 {
     let time_threshold = UnixTimestampSecs::now().sub(Duration::from_secs(600));
     let mut count: u64 = 0;
-
-    let resources = resources
-        .iter()
-        .map(|r| r.path.relative())
-        .collect::<HashSet<_>>();
 
     for entry in WalkDir::new(&crate::config::get().resource.upload_dir)
         .into_iter()
@@ -76,7 +74,7 @@ fn purge(resources: Vec<ResourcePo>) -> u64 {
     count
 }
 
-pub fn move_to_trash(path: &ResourcePath) -> Result<(), std::io::Error> {
+fn move_to_trash(path: &ResourcePath) -> Result<(), std::io::Error> {
     let to = PathJoin::root(&crate::config::get().resource.trash_dir)
         .join(path.relative())
         .into_string();

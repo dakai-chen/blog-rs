@@ -60,6 +60,16 @@ impl ResourcePath {
     pub fn absolute(&self) -> &str {
         &self.absolute_path
     }
+
+    /// 获取相对路径
+    pub fn into_relative(self) -> String {
+        self.relative_path
+    }
+
+    /// 获取绝对路径
+    pub fn into_absolute(self) -> String {
+        self.absolute_path
+    }
 }
 
 impl sqlx::Type<Db> for ResourcePath {
