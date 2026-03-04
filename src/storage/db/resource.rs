@@ -143,6 +143,31 @@ where
         .map_err(From::from)
 }
 
+pub async fn list_by_paths<Path>(paths: &[Path], db: &mut DbConn) -> anyhow::Result<Vec<ResourcePo>>
+where
+    Path: AsRef<str>,
+{
+    if paths.is_empty() {
+        return Ok(vec![]);
+    }
+
+    let mut sql = String::new();
+    let mut sql_params = SqliteArguments::default();
+
+    let binders = std::iter::repeat_n("?", paths.len())
+        .collect::<Vec<_>>()
+        .join(", ");
+    writeln!(&mut sql, "SELECT * FROM resource WHERE path IN ({binders})",)?;
+    for path in paths {
+        sql_params.add(path.as_ref()).anyhow()?;
+    }
+
+    sqlx::query_as_with(AssertSqlSafe(sql), sql_params)
+        .fetch_all(db)
+        .await
+        .map_err(From::from)
+}
+
 pub async fn all(db: &mut DbConn) -> anyhow::Result<Vec<ResourcePo>> {
     sqlx::query_as("SELECT * FROM resource")
         .fetch_all(db)

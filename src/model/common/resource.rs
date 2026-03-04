@@ -23,16 +23,16 @@ pub struct ResourcePath {
 }
 
 impl ResourcePath {
-    pub fn from_relative(relative_path: &str) -> anyhow::Result<Self> {
+    pub fn from_relative(relative_path: &str) -> Self {
         let relative_path = crate::util::path::normalize_sep(relative_path).into_owned();
         let absolute_path = PathJoin::root(NORMALIZE_SEP_UPLOAD_DIR.as_str())
             .join(&relative_path)
             .into_string();
 
-        Ok(Self {
+        Self {
             relative_path,
             absolute_path,
-        })
+        }
     }
 
     pub fn from_absolute(absolute_path: &str) -> anyhow::Result<Self> {
@@ -89,7 +89,6 @@ impl sqlx::Encode<'_, Db> for ResourcePath {
 
 impl sqlx::Decode<'_, Db> for ResourcePath {
     fn decode(value: <Db as Database>::ValueRef<'_>) -> Result<Self, BoxDynError> {
-        ResourcePath::from_relative(&<String as sqlx::Decode<Db>>::decode(value)?)
-            .map_err(From::from)
+        <String as sqlx::Decode<Db>>::decode(value).map(|path| ResourcePath::from_relative(&path))
     }
 }

@@ -69,6 +69,6 @@ impl UnixTimestampSecs {
     }
 
     pub fn sub(self, duration: Duration) -> Self {
-        Self(self.0.saturating_add_unsigned(duration.as_secs()))
+        Self(self.0.saturating_sub_unsigned(duration.as_secs()))
     }
 }
