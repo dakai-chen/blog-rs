@@ -138,6 +138,11 @@
     list-style-type: decimal;
 }
 
+.markdown ul>li:last-child *:last-child,
+.markdown ol>li:last-child *:last-child {
+    margin-bottom: 0 !important;
+}
+
 .markdown li {
     margin: 0.5rem 0;
 }
