@@ -18,6 +18,7 @@ mod template;
 mod util;
 mod validator;
 
+use std::env::VarError;
 use std::net::SocketAddr;
 use std::sync::Arc;
 
@@ -30,7 +31,13 @@ use crate::state::AppState;
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     dotenvy::dotenv()?;
-    config::init(&std::env::var("app.mode")?)?;
+
+    let mode: Option<String> = match std::env::var("app.mode") {
+        Ok(val) => Some(val),
+        Err(VarError::NotPresent) => None,
+        Err(e) => return Err(e.into()),
+    };
+    config::init(mode.as_deref())?;
 
     shutdown::set_timeout(config::get().http.shutdown_timeout);
 

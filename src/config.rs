@@ -34,10 +34,26 @@ pub struct AppConfig {
 }
 
 impl AppConfig {
-    pub fn from_mode(mode: &str) -> anyhow::Result<Self> {
+    pub fn load(mode: Option<&str>) -> anyhow::Result<Self> {
+        if let Some(mode) = mode {
+            Self::from_mode(mode)
+        } else {
+            Self::from_default()
+        }
+    }
+
+    fn from_default() -> anyhow::Result<Self> {
         Ok(config::Config::builder()
-            .add_source(config::File::with_name("config/default.toml"))
-            .add_source(config::File::with_name(&format!("config/{mode}.toml")).required(true))
+            .add_source(config::File::with_name("config/default.toml").required(true))
+            .add_source(config::Environment::default().prefix("APP").separator("."))
+            .build()?
+            .try_deserialize()?)
+    }
+
+    fn from_mode(mode: &str) -> anyhow::Result<Self> {
+        Ok(config::Config::builder()
+            .add_source(config::File::with_name("config/default.toml").required(true))
+            .add_source(config::File::with_name(&format!("config/env/{mode}.toml")).required(true))
             .add_source(config::Environment::default().prefix("APP").separator("."))
             .build()?
             .try_deserialize()?)
@@ -46,9 +62,9 @@ impl AppConfig {
 
 static APP_CONFIG: OnceLock<AppConfig> = OnceLock::new();
 
-pub fn init(mode: &str) -> anyhow::Result<()> {
+pub fn init(mode: Option<&str>) -> anyhow::Result<()> {
     APP_CONFIG
-        .set(AppConfig::from_mode(mode)?)
+        .set(AppConfig::load(mode)?)
         .map_err(|_| anyhow::anyhow!("重复初始化应用程序配置"))
 }
 
