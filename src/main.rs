@@ -30,7 +30,10 @@ use crate::state::AppState;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    dotenvy::dotenv()?;
+    dotenvy::from_path("./.env").or_else(|e| {
+        // 忽略文件未找到错误
+        e.not_found().then_some(()).ok_or(e)
+    })?;
 
     let mode: Option<String> = match std::env::var("app.mode") {
         Ok(val) => Some(val),

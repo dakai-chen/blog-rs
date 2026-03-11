@@ -23,7 +23,6 @@ WORKDIR /app
 RUN apt-get update && \
     apt-get install -y tzdata
 
-COPY --from=builder /app/.env.example ./.env
 COPY --from=builder /app/config ./config
 COPY --from=builder /app/sqlite ./sqlite
 COPY --from=builder /app/themes ./themes
