@@ -53,7 +53,7 @@ pub async fn init(db: &mut DbConn) -> anyhow::Result<()> {
         sqlx::raw_sql(sql).execute(tx as &mut DbConn).await?;
         Ok(())
     })
-    .await
+    .await?
 }
 
 fn build_init_sql() -> anyhow::Result<AssertSqlSafe<String>> {
@@ -98,10 +98,12 @@ fn sqlite_extensions(config: &DatabaseConfig) -> Vec<String> {
     ]
 }
 
-pub async fn transaction<F, Res, Err>(db: &mut DbConn, f: F) -> Result<Res, Err>
+pub async fn transaction<F, Res, Err>(
+    db: &mut DbConn,
+    f: F,
+) -> Result<Result<Res, Err>, sqlx::error::Error>
 where
     F: AsyncFnOnce(&mut Transaction<'_, Db>) -> Result<Res, Err>,
-    Err: From<sqlx::error::Error>,
 {
     let mut tx = db.begin().await?;
     let result = f(&mut tx).await;
@@ -109,5 +111,5 @@ where
         Ok(_) => tx.commit().await?,
         Err(_) => tx.rollback().await?,
     }
-    result
+    Ok(result)
 }

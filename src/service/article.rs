@@ -132,7 +132,7 @@ pub async fn create_article(bo: CreateArticleBo, db: &mut DbConn) -> Result<Arti
         crate::storage::db::article_stats::create(&stats, tx).await?;
         Ok(ArticleBo::from(article))
     })
-    .await
+    .await?
 }
 
 /// 修改文章
@@ -198,7 +198,7 @@ pub async fn remove_article(bo: &RemoveArticleBo<'_>, db: &mut DbConn) -> Result
         }
         Ok(())
     })
-    .await
+    .await?
 }
 
 /// 搜索文章
@@ -313,7 +313,7 @@ pub async fn upload_attachment(
 
         Ok(ArticleAttachmentBo::from_entities(attachment, resource))
     })
-    .await
+    .await?
 }
 
 /// 删除文章附件
@@ -337,7 +337,7 @@ pub async fn remove_attachment(
         crate::service::resource::remove_resource(&remove_resource, tx).await?;
         Ok(())
     })
-    .await
+    .await?
 }
 
 /// 下载文章附件
