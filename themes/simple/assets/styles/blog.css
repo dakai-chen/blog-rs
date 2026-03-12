@@ -190,7 +190,7 @@ a.btn:active {
     flex-wrap: nowrap;
     justify-content: center;
     margin-bottom: 1.5rem;
-    font-weight: bold;
+    font-weight: normal;
     font-size: 1.75rem;
     align-items: center;
     gap: 0.75rem;
@@ -322,7 +322,7 @@ a.btn:active {
     width: 1%;
     min-width: 0;
     font-size: 1rem;
-    font-weight: 400;
+    font-weight: normal;
     line-height: 1.5;
     padding: 0.375rem 0.75rem;
     color: var(--color-text);
@@ -333,7 +333,7 @@ a.btn:active {
     width: 1%;
     min-width: 0;
     font-size: 1rem;
-    font-weight: 400;
+    font-weight: normal;
     line-height: 1.5;
     padding: 0.375rem 0.75rem;
     color: var(--color-text);
@@ -484,6 +484,7 @@ a.btn:active {
     word-break: break-all;
     padding-bottom: 0.5rem;
     border-bottom: var(--blog-border-size) solid var(--color-border);
+    font-weight: normal;
 }
 
 .article .article-metadata {
@@ -587,6 +588,7 @@ a.btn:active {
 .article-unlock .article-title {
     word-break: break-all;
     text-align: center;
+    font-weight: normal;
 }
 
 /*******************************************************************************
@@ -617,7 +619,7 @@ a.btn:active {
 
 .modal-header {
     font-size: 1.25rem;
-    font-weight: bold;
+    font-weight: normal;
     padding: 1rem;
 }
 
