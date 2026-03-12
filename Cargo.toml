@@ -58,7 +58,7 @@ tokio-cron-scheduler = "0.15.1"
 
 # 页面渲染
 tera = "1.20.1"
-comrak = { version = "0.50.0", features = ["syntect", "shortcodes"] }
+comrak = { version = "0.51.0", features = ["syntect", "shortcodes"] }
 lol_html = "2.7.1"
 syntect = "5.3.0"
 
@@ -68,7 +68,7 @@ uuid = { version = "1.18.1", features = ["v4"] }
 bytesize = { version = "2.2.0", features = ["serde"] }
 mime = "0.3.17"
 urlencoding = "2.1.3"
-sysinfo = "0.37.2"
+sysinfo = "0.38.4"
 regex = "1.12.2"
 human_format = "1.2.1"
 walkdir = "2.5.0"
