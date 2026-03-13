@@ -18,6 +18,7 @@ serde = { version = "1", features = ["derive"] }
 serde_with = "3.15.1"
 serde_json = "1"
 humantime-serde = "1"
+toml = "0.9.8"
 
 # 环境与配置
 config = "0.15.18"
@@ -52,6 +53,9 @@ sha2 = "0.10.9"
 argon2 = "0.5.3"
 jsonwebtoken = { version = "10", features = ["rust_crypto"] }
 totp-rs = { version = "5.7.0", features = ["otpauth"] }
+base32 = "0.5.1"
+hex = "0.4.3"
+rand = "0.10.0"
 
 # 定时任务
 tokio-cron-scheduler = "0.15.1"

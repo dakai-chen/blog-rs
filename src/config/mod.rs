@@ -1,3 +1,5 @@
+pub mod generator;
+
 use std::collections::HashMap;
 use std::time::Duration;
 use std::{net::IpAddr, sync::OnceLock};
@@ -45,6 +47,7 @@ impl AppConfig {
     fn from_default() -> anyhow::Result<Self> {
         Ok(config::Config::builder()
             .add_source(config::File::with_name("config/default.toml").required(true))
+            .add_source(config::File::with_name("config/auth.toml"))
             .add_source(config::Environment::default().prefix("APP").separator("."))
             .build()?
             .try_deserialize()?)
@@ -53,7 +56,8 @@ impl AppConfig {
     fn from_mode(mode: &str) -> anyhow::Result<Self> {
         Ok(config::Config::builder()
             .add_source(config::File::with_name("config/default.toml").required(true))
-            .add_source(config::File::with_name(&format!("config/env/{mode}.toml")).required(true))
+            .add_source(config::File::with_name("config/user/auth.toml"))
+            .add_source(config::File::with_name(&format!("config/user/{mode}.toml")).required(true))
             .add_source(config::Environment::default().prefix("APP").separator("."))
             .build()?
             .try_deserialize()?)
@@ -63,6 +67,7 @@ impl AppConfig {
 static APP_CONFIG: OnceLock<AppConfig> = OnceLock::new();
 
 pub fn init(mode: Option<&str>) -> anyhow::Result<()> {
+    generator::generate_auth_config("config/user/auth.toml")?;
     APP_CONFIG
         .set(AppConfig::load(mode)?)
         .map_err(|_| anyhow::anyhow!("重复初始化应用程序配置"))
