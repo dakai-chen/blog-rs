@@ -135,10 +135,14 @@
     }
 
     function copy_share_link() {
-        const copy_btn = document.getElementById('copy-share-link');
+        const copy_share_link_btn = document.getElementById('copy-share-link');
+
+        if (copy_share_link_btn === null) {
+            return;
+        }
 
         // 绑定点击事件
-        copy_btn.addEventListener('click', function () {
+        copy_share_link_btn.addEventListener('click', function () {
             const article_id = "{{ context.article_id }}";
             const base_url = window.location.origin;
 
