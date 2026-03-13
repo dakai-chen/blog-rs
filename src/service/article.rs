@@ -26,7 +26,7 @@ use crate::model::po::article_stats::ArticleStatsPo;
 use crate::model::po::article_unlock_attempts::ArticleUnlockAttemptsPo;
 use crate::model::po::resource::ResourcePo;
 use crate::storage::cache::storage::CacheSetMode;
-use crate::storage::cache::{Cache, CacheData, CacheIdGenerator};
+use crate::storage::cache::{Cache, CacheIdGenerator};
 use crate::storage::db::DbConn;
 use crate::util::join::HashJoin;
 use crate::util::pagination::PageData;
@@ -34,7 +34,10 @@ use crate::util::time::UnixTimestampSecs;
 
 async fn unlock_ban(ip: IpAddr, article_id: &str) -> Result<(), AppError> {
     let id = ArticleUnlockBanCoIdGen { ip, article_id };
-    let co = ArticleUnlockBanCo.with_ttl(id, crate::config::get().article.unlock_ban_ttl);
+    let co = Cache::builder(ArticleUnlockBanCo)
+        .id(&id)
+        .ttl(crate::config::get().article.unlock_ban_ttl)
+        .build()?;
     co.set(CacheSetMode::Overwrite).await?;
     Ok(())
 }
@@ -438,7 +441,10 @@ async fn update_article_visit_stats(
         visitor_id: visitor.visitor_id(),
         article_id: article.id.as_str(),
     };
-    let cache = VisitorArticleAccessRecordCo.with_ttl(cache_id, Duration::from_secs(3600 * 24));
+    let cache = Cache::builder(VisitorArticleAccessRecordCo)
+        .id(&cache_id)
+        .ttl(Duration::from_secs(3600 * 24))
+        .build()?;
     let uv_add = match cache.set(CacheSetMode::OnlyIfNotExists).await? {
         true => 1,
         false => 0,

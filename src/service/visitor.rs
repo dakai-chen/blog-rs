@@ -3,8 +3,8 @@ use std::time::Duration;
 use crate::error::{AppError, AppErrorMeta};
 use crate::model::bo::visitor::VisitorArticleAccessPermitBo;
 use crate::model::co::visitor::VisitorCo;
+use crate::storage::cache::Cache;
 use crate::storage::cache::storage::CacheSetMode;
-use crate::storage::cache::{Cache, CacheData};
 
 pub const VISITOR_TTL: Duration = Duration::from_secs(3600 * 24 * 7);
 pub const VISITOR_KEEP_THRESHOLD: Duration = Duration::from_secs(3600 * 24);
@@ -13,7 +13,7 @@ pub async fn create() -> Result<String, AppError> {
     let data = VisitorCo {
         visitor_id: crate::util::uuid::v4(),
     };
-    let visitor = data.gen_id_with_ttl(VISITOR_TTL);
+    let visitor = Cache::builder(data).self_id().ttl(VISITOR_TTL).build()?;
     if !visitor.set(CacheSetMode::OnlyIfNotExists).await? {
         return Err(AppErrorMeta::Internal.with_context(format!(
             "创建访客失败，访客ID已存在。访客ID: {}",

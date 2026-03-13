@@ -9,6 +9,74 @@ use serde::{Deserialize, Serialize};
 use crate::storage::cache::storage::{CacheSetMode, CacheStorage};
 use crate::util::time::UnixTimestampSecs;
 
+#[derive(Debug)]
+pub struct CacheBuilder<T> {
+    /// 缓存ID
+    pub id: Option<String>,
+    /// 创建时间
+    pub created_at: i64,
+    /// 过期时间
+    pub expires_at: Option<i64>,
+    /// 缓存类型
+    pub kind: String,
+    /// 缓存数据
+    pub data: T,
+}
+
+impl<T: CacheData> CacheBuilder<T> {
+    pub fn new(data: T) -> Self {
+        Self {
+            id: None,
+            created_at: UnixTimestampSecs::now().as_i64(),
+            expires_at: None,
+            kind: T::kind().to_owned(),
+            data,
+        }
+    }
+
+    pub fn self_id(mut self) -> Self
+    where
+        T: CacheIdGenerator,
+    {
+        self.id = Some(self.data.generate_id().into_owned());
+        self
+    }
+
+    pub fn id<G>(mut self, id: &G) -> Self
+    where
+        G: CacheIdGenerator,
+    {
+        self.id = Some(id.generate_id().into_owned());
+        self
+    }
+
+    pub fn created_at(mut self, created_at: i64) -> Self {
+        self.created_at = created_at;
+        self
+    }
+
+    pub fn expires_at(mut self, expires_at: i64) -> Self {
+        self.expires_at = Some(expires_at);
+        self
+    }
+
+    pub fn ttl(mut self, ttl: Duration) -> Self {
+        self.expires_at = Some(self.created_at.saturating_add_unsigned(ttl.as_secs()));
+        self
+    }
+
+    pub fn build(self) -> anyhow::Result<Cache<T>> {
+        Ok(Cache::new(
+            self.id
+                .ok_or_else(|| anyhow::anyhow!("Failed to build Cache: Missing `id`"))?,
+            self.data,
+            self.created_at,
+            self.expires_at
+                .ok_or_else(|| anyhow::anyhow!("Failed to build Cache: Missing `expires_at`"))?,
+        ))
+    }
+}
+
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Cache<T> {
     /// 缓存ID
@@ -53,40 +121,13 @@ impl CacheIdGenerator for Cow<'_, str> {
 
 pub trait CacheData: DeserializeOwned + Serialize + Send + Sync {
     fn kind() -> &'static str;
-
-    fn with_ttl<G>(self, id: G, ttl: Duration) -> Cache<Self>
-    where
-        G: CacheIdGenerator,
-    {
-        Cache::with_ttl(id, self, ttl)
-    }
-
-    fn gen_id_with_ttl(self, ttl: Duration) -> Cache<Self>
-    where
-        Self: CacheIdGenerator,
-    {
-        Cache::gen_id_with_ttl(self, ttl)
-    }
-}
-
-impl<T: CacheData + CacheIdGenerator> Cache<T> {
-    pub fn gen_id_new(data: T, created_at: i64, expires_at: i64) -> Self {
-        Self {
-            id: data.generate_id().into_owned(),
-            created_at,
-            expires_at,
-            kind: T::kind().to_owned(),
-            data,
-        }
-    }
-
-    pub fn gen_id_with_ttl(data: T, ttl: Duration) -> Self {
-        let now = UnixTimestampSecs::now();
-        Self::gen_id_new(data, now.as_i64(), now.add(ttl).as_i64())
-    }
 }
 
 impl<T: CacheData> Cache<T> {
+    pub fn builder(data: T) -> CacheBuilder<T> {
+        CacheBuilder::new(data)
+    }
+
     pub fn new<G>(id: G, data: T, created_at: i64, expires_at: i64) -> Self
     where
         G: CacheIdGenerator,
@@ -98,14 +139,6 @@ impl<T: CacheData> Cache<T> {
             kind: T::kind().to_owned(),
             data,
         }
-    }
-
-    pub fn with_ttl<G>(id: G, data: T, ttl: Duration) -> Self
-    where
-        G: CacheIdGenerator,
-    {
-        let now = UnixTimestampSecs::now();
-        Self::new(id, data, now.as_i64(), now.add(ttl).as_i64())
     }
 
     pub async fn get_in<S>(id: &str, storage: &S) -> anyhow::Result<Option<Self>>

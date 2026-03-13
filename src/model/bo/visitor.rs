@@ -12,7 +12,7 @@ use crate::error::{AppError, AppErrorMeta};
 use crate::model::co::article::{VisitorArticleAccessPermitCo, VisitorArticleAccessPermitCoIdGen};
 use crate::model::co::visitor::VisitorCo;
 use crate::storage::cache::storage::CacheSetMode;
-use crate::storage::cache::{Cache, CacheData, CacheIdGenerator};
+use crate::storage::cache::{Cache, CacheIdGenerator};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct VisitorBo {
@@ -97,8 +97,10 @@ impl<'a> VisitorArticleAccessPermitBo<'a> {
             visitor_id: self.visitor_id.as_ref().into(),
             article_id: article_id.into(),
         };
-        let permit = VisitorArticleAccessPermitCo
-            .with_ttl(&cache_id, crate::config::get().article.access_access_ttl);
+        let permit = Cache::builder(VisitorArticleAccessPermitCo)
+            .id(&cache_id)
+            .ttl(crate::config::get().article.access_access_ttl)
+            .build()?;
         permit.set(CacheSetMode::Overwrite).await?;
         Ok(())
     }
