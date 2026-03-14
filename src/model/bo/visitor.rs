@@ -99,7 +99,7 @@ impl<'a> VisitorArticleAccessPermitBo<'a> {
         };
         let permit = Cache::builder(VisitorArticleAccessPermitCo)
             .id(&cache_id)
-            .ttl(crate::config::get().article.access_access_ttl)
+            .ttl(crate::config::get().article.access_ttl)
             .build()?;
         permit.set(CacheSetMode::Overwrite).await?;
         Ok(())

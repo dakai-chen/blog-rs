@@ -347,7 +347,7 @@ pub struct CronTaskConfig {
 pub struct ArticleConfig {
     /// 文章访问许可有效期
     #[serde(with = "humantime_serde")]
-    pub access_access_ttl: Duration,
+    pub access_ttl: Duration,
     /// 全文搜索匹配结果最大输出条目
     pub full_text_search_limit: u64,
     /// 文章标题最大长度限制
