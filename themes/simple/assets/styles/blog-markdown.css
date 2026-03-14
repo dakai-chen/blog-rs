@@ -25,7 +25,7 @@
 .markdown h4,
 .markdown h5,
 .markdown h6 {
-    margin: 1.5rem 0;
+    margin: 2rem 0;
     font-weight: normal;
     color: var(--color-border);
     line-height: 1.25;
@@ -71,7 +71,6 @@
 .markdown h5 .anchor::before,
 .markdown h6 .anchor::before {
     color: var(--color-primary);
-    font-weight: bold;
 }
 
 .markdown h1 .anchor::before {
@@ -105,11 +104,11 @@
 .markdown dl,
 .markdown pre,
 .markdown .table-box {
-    margin: 1rem 0;
+    margin: 1.5rem 0;
 }
 
 .markdown hr {
-    margin: 1rem 0;
+    margin: 1.5rem 0;
     border: none;
     border-top: var(--blog-border-size) solid var(--color-border);
 }
@@ -119,7 +118,7 @@
     padding-left: 2rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .markdown ul>li {
@@ -143,7 +142,7 @@
 }
 
 .markdown li p:first-of-type+* {
-    margin-top: 0.5rem !important;
+    margin-top: 1rem !important;
 }
 
 .markdown li>*:last-child {
