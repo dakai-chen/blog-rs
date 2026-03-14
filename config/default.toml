@@ -129,13 +129,13 @@ dir = "themes"
 ### 用户自定义主题目录
 custom_dir = "data/theme"
 ### 代码语法的来源（可选值：default/theme/custom）
-code_syntax_source = "default"
+code_syntax_source = "theme"
 ### 代码主题的来源（可选值：default/theme/custom）
-code_themes_source = "default"
+code_themes_source = "theme"
 ### 当前使用的页面主题名称
 current_page_theme = "simple"
 ### 当前使用的代码主题名称
-current_code_theme = "base16-ocean.light"
+current_code_theme = "Tomorrow"
 
 ### ----------------------------------------------------------------------------
 ### 定时任务配置
