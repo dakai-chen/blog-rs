@@ -1,5 +1,5 @@
-mod article;
 mod cache;
+mod failed_attempts;
 mod resource;
 
 use std::sync::Arc;
@@ -11,8 +11,8 @@ use crate::state::AppState;
 pub fn build(state: Arc<AppState>) -> anyhow::Result<CronTaskCollector<Arc<AppState>>> {
     CronTaskCollector::new(state)
         .config_add(cache::prune_cache)?
-        .config_add(article::prune_article_unlock_attempts)?
-        .config_add(resource::purge_orphaned_resources)
+        .config_add(resource::purge_orphaned_resources)?
+        .config_add(failed_attempts::prune_failed_attempts)
 }
 
 impl CronTaskCollector<Arc<AppState>> {

@@ -140,7 +140,7 @@ enabled = true
 ### 日程表达式
 schedule = "*/30 * * * * *"
 
-[cron.tasks.prune_article_unlock_attempts]
+[cron.tasks.prune_failed_attempts]
 ### 启用定时任务
 enabled = true
 ### 日程表达式

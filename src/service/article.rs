@@ -6,11 +6,12 @@ use regex::Regex;
 use crate::error::{AppError, AppErrorMeta};
 use crate::model::bo::article::{
     AdminArticleDetailsBo, ArticleAttachmentBo, ArticleBo, ArticleDetailsBo, ArticleListBo,
-    ArticleListItemBo, ArticleUnlockBanBo, CreateArticleBo, DownloadArticleAttachmentBo,
-    GetArticleBo, RemoveArticleAttachmentBo, RemoveArticleBo, SearchArticleBo, UnlockArticleBo,
-    UpdateArticleBo, UploadArticleAttachmentBo, VisitorArticleDetailsBo,
+    ArticleListItemBo, CreateArticleBo, DownloadArticleAttachmentBo, GetArticleBo,
+    RemoveArticleAttachmentBo, RemoveArticleBo, SearchArticleBo, UnlockArticleBo, UpdateArticleBo,
+    UploadArticleAttachmentBo, VisitorArticleDetailsBo,
 };
 use crate::model::bo::auth::AdminBo;
+use crate::model::bo::failed_attempts::FailedAttemptsBanBo;
 use crate::model::bo::resource::{RemoveResourceBo, UploadResourceOptionsBo};
 use crate::model::bo::visitor::VisitorBo;
 use crate::model::co::article::{VisitorArticleAccessRecordCo, VisitorArticleAccessRecordCoIdGen};
@@ -39,13 +40,24 @@ pub async fn unlock_article(
         return Err(AppErrorMeta::BadRequest.with_message("该文章无需密码进行访问"));
     };
 
-    if ArticleUnlockBanBo::is_banned(visitor.ip(), &bo.article_id).await? {
+    if FailedAttemptsBanBo::is_banned(
+        FailedAttemptsBanBo::SCENE_ARTICLE_UNLOCK,
+        visitor.ip(),
+        &bo.article_id,
+    )
+    .await?
+    {
         return Err(AppErrorMeta::BadRequest.with_message("文章解锁尝试次数过多，请稍后再试"));
     }
 
     if bo.password != password {
-        let (remaining_times, is_banned) =
-            ArticleUnlockBanBo::record_failed_with_ban(visitor.ip(), article.id, db).await?;
+        let (remaining_times, is_banned) = FailedAttemptsBanBo::record_failed_with_ban(
+            FailedAttemptsBanBo::SCENE_ARTICLE_UNLOCK,
+            visitor.ip(),
+            article.id,
+            db,
+        )
+        .await?;
 
         if is_banned {
             return Err(AppErrorMeta::BadRequest.with_message("文章解锁尝试次数过多，请稍后再试"));
