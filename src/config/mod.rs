@@ -246,12 +246,12 @@ pub struct JwtConfig {
 pub struct ThemeConfig {
     /// 主题文件存储的目录路径
     pub dir: String,
-    /// 自定义模板目录
-    pub custom_template_dir: String,
-    /// 是否启用内置的代码语法
-    pub enable_default_code_syntax: bool,
-    /// 是否启用内置的代码主题
-    pub enable_default_code_themes: bool,
+    /// 用户自定义主题目录
+    pub custom_dir: String,
+    /// 代码语法的来源（可选值：default/theme/custom）
+    pub code_syntax_source: ThemeCodeSource,
+    /// 代码主题的来源（可选值：default/theme/custom）
+    pub code_themes_source: ThemeCodeSource,
     /// 当前使用的页面主题名称
     pub current_page_theme: String,
     /// 当前使用的代码主题名称
@@ -262,11 +262,18 @@ pub struct ThemeConfig {
     /// 当前使用的主题配置
     #[serde(skip)]
     current: CurrentThemeConfig,
+    /// 自定义的主题配置
+    #[serde(skip)]
+    custom: CustomThemeConfig,
 }
 
 impl ThemeConfig {
     pub fn current(&self) -> &CurrentThemeConfig {
         &self.current
+    }
+
+    pub fn custom(&self) -> &CustomThemeConfig {
+        &self.custom
     }
 }
 
@@ -278,25 +285,29 @@ impl<'de> Deserialize<'de> for ThemeConfig {
         #[derive(Deserialize)]
         struct TempThemeConfig {
             dir: String,
-            custom_template_dir: String,
-            enable_default_code_syntax: bool,
-            enable_default_code_themes: bool,
+            custom_dir: String,
+            code_syntax_source: ThemeCodeSource,
+            code_themes_source: ThemeCodeSource,
             current_page_theme: String,
             current_code_theme: String,
             #[serde(default)]
             extensions: HashMap<String, String>,
         }
+
         let temp = TempThemeConfig::deserialize(deserializer)?;
-        let current_theme = CurrentThemeConfig::from_theme(&temp.dir, &temp.current_page_theme);
+        let current_theme = CurrentThemeConfig::new(&temp.dir, &temp.current_page_theme);
+        let custom_theme = CustomThemeConfig::new(&temp.custom_dir);
+
         Ok(ThemeConfig {
             dir: temp.dir,
-            custom_template_dir: temp.custom_template_dir,
-            enable_default_code_syntax: temp.enable_default_code_syntax,
-            enable_default_code_themes: temp.enable_default_code_themes,
+            custom_dir: temp.custom_dir,
+            code_syntax_source: temp.code_syntax_source,
+            code_themes_source: temp.code_themes_source,
             current_page_theme: temp.current_page_theme,
             current_code_theme: temp.current_code_theme,
             extensions: temp.extensions,
             current: current_theme,
+            custom: custom_theme,
         })
     }
 }
@@ -315,7 +326,7 @@ pub struct CurrentThemeConfig {
 }
 
 impl CurrentThemeConfig {
-    pub fn from_theme(dir: &str, name: &str) -> Self {
+    pub fn new(dir: &str, name: &str) -> Self {
         let base = PathJoin::root(dir).join(name);
         Self {
             assets_dir: base.clone().join("assets").into_string(),
@@ -324,6 +335,39 @@ impl CurrentThemeConfig {
             code_syntax_dir: base.clone().join("code/syntax").into_string(),
         }
     }
+}
+
+/// 自定义的主题配置
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct CustomThemeConfig {
+    /// 自定义的模板文件目录
+    pub templates_dir: String,
+    /// 自定义的代码主题文件目录
+    pub code_themes_dir: String,
+    /// 自定义的代码语法文件目录
+    pub code_syntax_dir: String,
+}
+
+impl CustomThemeConfig {
+    pub fn new(dir: &str) -> Self {
+        let base = PathJoin::root(dir);
+        Self {
+            templates_dir: base.clone().join("templates").into_string(),
+            code_themes_dir: base.clone().join("code/themes").into_string(),
+            code_syntax_dir: base.clone().join("code/syntax").into_string(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ThemeCodeSource {
+    // 使用默认内置
+    Default,
+    // 使用主题内置
+    Theme,
+    // 使用自定义
+    Custom,
 }
 
 /// 定时任务配置

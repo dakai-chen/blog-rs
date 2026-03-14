@@ -9,19 +9,19 @@ use crate::template::render::{PageContext, TemplateRenderData};
 use crate::util::path::PathJoin;
 
 pub fn build_template(config: &ThemeConfig) -> anyhow::Result<TemplateEngine> {
-    let default = Tera::parse(
+    let current = Tera::parse(
         &PathJoin::root(&config.current().templates_dir)
             .join("**/*")
             .into_string(),
     )?;
 
     let mut custom = Tera::parse(
-        &PathJoin::root(&config.custom_template_dir)
+        &PathJoin::root(&config.custom().templates_dir)
             .join("**/*")
             .into_string(),
     )?;
 
-    custom.extend(&default)?;
+    custom.extend(&current)?;
     custom.build_inheritance_chains()?;
 
     helper::register_helper(&mut custom, config)?;

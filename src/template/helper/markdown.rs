@@ -9,7 +9,7 @@ use syntect::highlighting::ThemeSet;
 use syntect::parsing::SyntaxSet;
 use tera::{Error, Filter, Value};
 
-use crate::config::ThemeConfig;
+use crate::config::{ThemeCodeSource, ThemeConfig};
 
 pub struct MarkdownToHtml {
     syntect: SyntectAdapter,
@@ -19,16 +19,24 @@ impl MarkdownToHtml {
     pub fn from_config(config: &ThemeConfig) -> anyhow::Result<Self> {
         let mut builder = SyntectAdapterBuilder::new();
 
-        if !config.enable_default_code_syntax {
-            builder = builder.syntax_set(SyntaxSet::load_from_folder(
+        builder = match config.code_syntax_source {
+            ThemeCodeSource::Default => builder,
+            ThemeCodeSource::Theme => builder.syntax_set(SyntaxSet::load_from_folder(
                 &config.current().code_syntax_dir,
-            )?);
-        }
-        if !config.enable_default_code_themes {
-            builder = builder.theme_set(ThemeSet::load_from_folder(
+            )?),
+            ThemeCodeSource::Custom => builder.syntax_set(SyntaxSet::load_from_folder(
+                &config.custom().code_syntax_dir,
+            )?),
+        };
+        builder = match config.code_themes_source {
+            ThemeCodeSource::Default => builder,
+            ThemeCodeSource::Theme => builder.theme_set(ThemeSet::load_from_folder(
                 &config.current().code_themes_dir,
-            )?);
-        }
+            )?),
+            ThemeCodeSource::Custom => builder.theme_set(ThemeSet::load_from_folder(
+                &config.custom().code_themes_dir,
+            )?),
+        };
 
         let syntect = builder.theme(&config.current_code_theme).build();
 
