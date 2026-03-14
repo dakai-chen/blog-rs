@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+use std::net::IpAddr;
 use std::sync::LazyLock;
 
 use regex::Regex;
@@ -27,6 +28,35 @@ use crate::util::join::HashJoin;
 use crate::util::pagination::PageData;
 use crate::util::time::UnixTimestampSecs;
 
+async fn is_banned(ip: IpAddr, article_id: &str) -> Result<(), AppError> {
+    if FailedAttemptsBanBo::is_banned(FailedAttemptsBanBo::SCENE_ARTICLE_UNLOCK, ip, article_id)
+        .await?
+    {
+        return Err(AppErrorMeta::BadRequest.with_message("文章解锁尝试次数过多，请稍后再试"));
+    }
+    Ok(())
+}
+
+async fn try_ban(
+    ip: IpAddr,
+    article_id: String,
+    db: &mut DbConn,
+) -> Result<Cow<'static, str>, AppError> {
+    let (remaining_times, is_banned) = FailedAttemptsBanBo::record_failed_with_ban(
+        FailedAttemptsBanBo::SCENE_ARTICLE_UNLOCK,
+        ip,
+        article_id,
+        db,
+    )
+    .await?;
+
+    if is_banned {
+        Ok("文章解锁尝试次数过多，请稍后再试".into())
+    } else {
+        Ok(format!("文章访问密码错误！剩余尝试次数 {remaining_times} 次").into())
+    }
+}
+
 /// 解锁文章（获取访问令牌）
 pub async fn unlock_article(
     visitor: &VisitorBo,
@@ -40,32 +70,11 @@ pub async fn unlock_article(
         return Err(AppErrorMeta::BadRequest.with_message("该文章无需密码进行访问"));
     };
 
-    if FailedAttemptsBanBo::is_banned(
-        FailedAttemptsBanBo::SCENE_ARTICLE_UNLOCK,
-        visitor.ip(),
-        &bo.article_id,
-    )
-    .await?
-    {
-        return Err(AppErrorMeta::BadRequest.with_message("文章解锁尝试次数过多，请稍后再试"));
-    }
+    is_banned(visitor.ip(), &bo.article_id).await?;
 
     if bo.password != password {
-        let (remaining_times, is_banned) = FailedAttemptsBanBo::record_failed_with_ban(
-            FailedAttemptsBanBo::SCENE_ARTICLE_UNLOCK,
-            visitor.ip(),
-            article.id,
-            db,
-        )
-        .await?;
-
-        if is_banned {
-            return Err(AppErrorMeta::BadRequest.with_message("文章解锁尝试次数过多，请稍后再试"));
-        } else {
-            return Err(AppErrorMeta::BadRequest.with_message(format!(
-                "文章访问密码错误！剩余尝试次数 {remaining_times} 次"
-            )));
-        }
+        let message = try_ban(visitor.ip(), article.id, db).await?;
+        return Err(AppErrorMeta::BadRequest.with_message(message));
     }
 
     visitor.add_article(&article.id).await?;

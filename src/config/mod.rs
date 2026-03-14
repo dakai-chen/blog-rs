@@ -224,6 +224,14 @@ pub struct AdminConfig {
     /// 会话有效期
     #[serde(with = "humantime_serde")]
     pub session_ttl: Duration,
+    /// 登录尝试次数统计的时间窗口
+    #[serde(with = "humantime_serde")]
+    pub login_try_window: Duration,
+    /// 登录时间窗口内允许的最大尝试次数
+    pub login_try_max_times: u32,
+    /// 登录尝试次数超限后的封禁时长
+    #[serde(with = "humantime_serde")]
+    pub login_ban_ttl: Duration,
 }
 
 /// JWT 配置

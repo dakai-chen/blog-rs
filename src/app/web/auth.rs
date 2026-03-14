@@ -5,6 +5,8 @@ use boluo::data::{Extension, Form};
 use boluo::response::{Html, IntoResponse, Redirect};
 
 use crate::context::auth::{AdminCleanCookie, AdminFromCookie, AdminWriteCookie};
+use crate::context::db::DbPoolConnection;
+use crate::context::ip::ClientIP;
 use crate::model::dto::web::auth::AdminLoginSubmitDto;
 use crate::model::vo::auth::{AdminLoginVo, AdminLogoutVo};
 use crate::state::AppState;
@@ -25,10 +27,12 @@ pub async fn login(
 
 #[boluo::route("/login", method = ["POST"])]
 pub async fn login_submit(
+    ClientIP(ip): ClientIP,
     Form(params): Form<AdminLoginSubmitDto>,
+    DbPoolConnection(mut db): DbPoolConnection,
 ) -> Result<impl IntoResponse, BoxError> {
     params.validate(&())?;
-    let token = crate::service::auth::login(&params.into()).await?;
+    let token = crate::service::auth::login(ip, &params.into(), &mut db).await?;
     Ok((AdminWriteCookie::from(token), Redirect::to("/")))
 }
 
