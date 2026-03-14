@@ -270,7 +270,7 @@
     right: 0.25rem;
     padding: 0.25rem 0.25rem;
     border: none;
-    background-color: var(--color-gray-400);
+    background-color: var(--color-primary);
     color: var(--color-bg-white);
     font-size: 0.875rem;
     cursor: pointer;
@@ -282,7 +282,7 @@
 }
 
 .markdown pre .code-copy-btn:hover {
-    background-color: var(--color-gray-500);
+    background-color: var(--color-primary-dark);
 }
 
 .markdown pre:hover .code-copy-btn {
