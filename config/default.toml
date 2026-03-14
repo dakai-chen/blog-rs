@@ -39,8 +39,8 @@ max_keep_files = 7
 default_limit = "2MiB"
 ### 自定义请求体大小限制规则列表
 rules = [
-    { path = "/api/resource/upload", method = "POST", limit = "2GiB" },
-    { path = "/api/article/upload_attachment", method = "POST", limit = "2GiB" },
+    { path = "/api/resource/upload", method = "POST", limit = "100MiB" },
+    { path = "/api/article/upload_attachment", method = "POST", limit = "500MiB" },
 ]
 
 ### ----------------------------------------------------------------------------
@@ -86,7 +86,7 @@ min_connections = 1
 ### 最大连接数量
 max_connections = 1
 ### 连接获取超时时间
-acquire_timeout = "3s"
+acquire_timeout = "6s"
 ### 连接空闲超时时间
 idle_timeout = "10m"
 ### 连接最大保持时间
@@ -99,7 +99,7 @@ max_lifetime = "30m"
 ### 上传文件的存储目录
 upload_dir = "data/upload"
 ### 上传文件的大小限制
-upload_file_max_size = "2GiB"
+upload_file_max_size = "1GiB"
 ### 回收站目录
 trash_dir = "data/trash"
 ### 孤立文件移入回收站的时间阈值
@@ -144,13 +144,13 @@ current_code_theme = "Solarized (light)"
 ### 启用定时任务
 enabled = true
 ### 日程表达式
-schedule = "*/30 * * * * *"
+schedule = "0 */5 * * * *"
 
 [cron.tasks.prune_failed_attempts]
 ### 启用定时任务
 enabled = true
 ### 日程表达式
-schedule = "*/30 * * * * *"
+schedule = "0 */5 * * * *"
 
 [cron.tasks.purge_orphaned_resources]
 ### 启用定时任务
@@ -167,7 +167,7 @@ access_access_ttl = "1h"
 ### 全文搜索匹配结果最大输出条目
 full_text_search_limit = 100
 ### 文章标题最大长度限制
-title_max_length = 40
+title_max_length = 80
 ### 文章摘要最大长度限制
 excerpt_max_length = 200
 ### 文章正文最大字节限制
@@ -195,7 +195,7 @@ session_keep_threshold = "8h"
 ### ----------------------------------------------------------------------------
 [theme.extensions]
 ### 网站标题
-title = "个人博客"
+title = "My Blog"
 ### 网站描述
 description = ""
 ### 网站的基础网址
