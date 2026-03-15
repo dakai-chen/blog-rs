@@ -1,11 +1,11 @@
 use std::error::Error;
+use std::fmt::Write;
 use std::sync::LazyLock;
 
-use comrak::Options;
+use comrak::nodes::NodeValue;
 use comrak::options::Plugins;
 use comrak::plugins::syntect::{SyntectAdapter, SyntectAdapterBuilder};
-use lol_html::html_content::{ContentType, Element};
-use lol_html::{RewriteStrSettings, element, rewrite_str};
+use comrak::{Arena, Options};
 use syntect::highlighting::ThemeSet;
 use syntect::parsing::SyntaxSet;
 
@@ -24,9 +24,40 @@ pub fn render(markdown: &str) -> anyhow::Result<String> {
     let options = markdown_options();
     let plugins = markdown_plugins(&MARKDOWN_TO_HTML_CONFIG.syntect);
 
-    let html = comrak::markdown_to_html_with_plugins(markdown, &options, &plugins);
+    comrak::create_formatter!(CustomFormatter<()>, {
+        NodeValue::CodeBlock(ref ncb) => |context, node, entering| {
+            let child_rendering = if entering {
+                context.write_str(r#"<div class="code-block-box"><div class="code-block-header"><span>"#)?;
+                comrak::html::escape(context, &ncb.info)?;
+                context.write_str(r#"</span><button class="code-copy-btn" title="将代码复制到剪贴板"></button></div>"#)?;
+                comrak::html::format_node_default(context, node, entering)?
+            } else {
+                let child_rendering = comrak::html::format_node_default(context, node, entering)?;
+                context.write_str("</div>")?;
+                child_rendering
+            };
+            return Ok(child_rendering);
+        },
+        NodeValue::Table(_) => |context, node, entering| {
+            let child_rendering = if entering {
+                context.write_str(r#"<div class="table-box">"#)?;
+                comrak::html::format_node_default(context, node, entering)?
+            } else {
+                let child_rendering = comrak::html::format_node_default(context, node, entering)?;
+                context.write_str("</div>")?;
+                child_rendering
+            };
+            return Ok(child_rendering);
+        },
+    });
 
-    rewrite_html(&html)
+    let arena = Arena::new();
+    let root = comrak::parse_document(&arena, markdown, &options);
+
+    let mut html = String::new();
+    CustomFormatter::format_document_with_plugins(&root, &options, &mut html, &plugins, ())?;
+
+    Ok(html)
 }
 
 struct MarkdownToHtmlConfig {
@@ -87,18 +118,4 @@ fn markdown_plugins(syntect: &SyntectAdapter) -> Plugins<'_> {
     plugins.render.codefence_syntax_highlighter = Some(syntect);
 
     plugins
-}
-
-fn rewrite_html(html: &str) -> anyhow::Result<String> {
-    let settings = RewriteStrSettings {
-        element_content_handlers: vec![element!("table", handle_table)],
-        ..RewriteStrSettings::new()
-    };
-    Ok(rewrite_str(html, settings)?)
-}
-
-fn handle_table(el: &mut Element) -> Result<(), BoxStdError> {
-    el.before("<div class=\"table-box\">", ContentType::Html);
-    el.after("</div>", ContentType::Html);
-    Ok(())
 }

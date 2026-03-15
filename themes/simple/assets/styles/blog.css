@@ -83,6 +83,7 @@ textarea:focus {
 }
 
 button {
+    user-select: none;
     outline: none;
     font-size: 1rem;
     padding: var(--blog-btn-padding);
@@ -718,7 +719,7 @@ a.btn:active {
 }
 
 .permission-item {
-    border-radius: 0.25rem;
+    border-radius: 4px;
     padding: 0 0.25rem;
     background-color: var(--color-highlight);
 }
@@ -749,7 +750,7 @@ a.btn:active {
     color: var(--blog-tips-item-color);
     background-color: var(--blog-tips-item-color-bg);
     border: var(--blog-border-size) solid var(--blog-tips-item-color-border);
-    border-radius: 0.25rem;
+    border-radius: 4px;
     padding: 0.5rem 1.25rem;
     max-width: var(--blog-tips-item-max-width);
     width: var(--blog-tips-item-width);
