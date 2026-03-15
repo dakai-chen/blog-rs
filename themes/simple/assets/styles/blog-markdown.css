@@ -150,9 +150,9 @@
 }
 
 .markdown blockquote {
-    border-left: 0.25rem solid var(--color-border-ultralight);
+    border-left: 0.25rem solid var(--color-gray-300);
     padding: 0 1rem;
-    color: var(--color-text-disabled);
+    color: var(--color-text-secondary);
 }
 
 .markdown blockquote>p:first-child {
