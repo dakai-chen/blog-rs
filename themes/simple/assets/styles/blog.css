@@ -547,13 +547,8 @@ a.btn:active {
     gap: 1rem;
     padding: 0.5rem 0.75rem;
     background-color: var(--color-bg-white);
-    border: 1px solid var(--color-border);
     transition: all 0.2s ease;
-}
-
-.article-attachment-list .article-attachment-item:hover {
-    border-color: var(--color-secondary);
-    box-shadow: 0 0.125rem 0.5rem rgba(64, 150, 255, 0.1);
+    border: var(--blog-border-size) solid var(--color-border);
 }
 
 .article-attachment-item .article-attachment-name {

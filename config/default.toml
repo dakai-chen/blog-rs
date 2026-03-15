@@ -135,7 +135,7 @@ code_themes_source = "theme"
 ### 当前使用的页面主题名称
 current_page_theme = "simple"
 ### 当前使用的代码主题名称
-current_code_theme = "Tomorrow"
+current_code_theme = "OneLight"
 ### 渲染版本号
 render_version = "default"
 

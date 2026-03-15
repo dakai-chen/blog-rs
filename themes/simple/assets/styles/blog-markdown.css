@@ -227,6 +227,8 @@
     overflow-x: auto;
     background-color: transparent;
     line-height: 1.5;
+    border-radius: 0;
+    border: var(--blog-border-size) solid var(--color-border);
 }
 
 .markdown img {
