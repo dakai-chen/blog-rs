@@ -533,6 +533,12 @@ a.btn:active {
  * 文章附件
  ******************************************************************************/
 
+.article-attachment {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
 .article-attachment-list {
     display: flex;
     flex-direction: column;
@@ -786,4 +792,25 @@ a.btn:active {
     to {
         opacity: 0;
     }
+}
+
+/*******************************************************************************
+ * 分区线
+ ******************************************************************************/
+
+.divider-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.divider-line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-border);
+}
+
+.divider-text {
+    white-space: nowrap;
+    font-size: 1rem;
 }
