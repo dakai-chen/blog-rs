@@ -16,12 +16,13 @@ RUN cargo install --path . --features "$FEATURES" --root /app/install
 # 打包
 # ------------------------------------------------------------------------------
 
-FROM ubuntu
+FROM debian:bookworm-slim
 
 WORKDIR /app
 
 RUN apt-get update && \
-    apt-get install -y tzdata
+    apt-get install -y tzdata && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/config ./config
 COPY --from=builder /app/sqlite ./sqlite
