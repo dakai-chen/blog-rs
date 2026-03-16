@@ -28,7 +28,11 @@ pub fn render(markdown: &str) -> anyhow::Result<String> {
         NodeValue::CodeBlock(ref ncb) => |context, node, entering| {
             let child_rendering = if entering {
                 context.write_str(r#"<div class="code-block-box"><div class="code-block-header"><span>"#)?;
-                comrak::html::escape(context, &ncb.info)?;
+                if ncb.info.is_empty() {
+                    comrak::html::escape(context, "plaintext")?;
+                } else {
+                    comrak::html::escape(context, &ncb.info)?;
+                }
                 context.write_str(r#"</span><button class="code-copy-btn" title="将代码复制到剪贴板"></button></div>"#)?;
                 comrak::html::format_node_default(context, node, entering)?
             } else {
