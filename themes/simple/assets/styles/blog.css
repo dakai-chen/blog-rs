@@ -473,12 +473,12 @@ a.btn:active {
 .article {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
 }
 
 .article .article-header {
     display: flex;
     flex-direction: column;
+    margin-bottom: 1.5rem;
 }
 
 .article .article-title {
@@ -537,12 +537,13 @@ a.btn:active {
 .article-attachment {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    margin-top: 1.5rem;
 }
 
 .article-attachment-list {
     display: flex;
     flex-direction: column;
+    margin-top: 1.5rem;
     gap: 1rem;
     max-width: 100%;
     font-size: 0.875rem;
