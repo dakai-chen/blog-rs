@@ -486,6 +486,7 @@ a.btn:active {
     padding-bottom: 1rem;
     border-bottom: var(--blog-border-size) solid var(--color-border);
     font-weight: normal;
+    font-size: 2rem;
 }
 
 .article .article-metadata {
@@ -591,6 +592,7 @@ a.btn:active {
     word-break: break-all;
     text-align: center;
     font-weight: normal;
+    font-size: 2rem;
 }
 
 /*******************************************************************************
