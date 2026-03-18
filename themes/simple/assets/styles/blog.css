@@ -52,6 +52,8 @@ a:hover {
     color: var(--blog-a-normal-hover);
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
 }
 
 a:active {
@@ -137,6 +139,7 @@ a.btn {
 a.btn:hover {
     color: var(--blog-btn-color-hover);
     background-color: var(--blog-btn-color-hover-bg);
+    text-decoration: none;
 }
 
 a.btn:active {

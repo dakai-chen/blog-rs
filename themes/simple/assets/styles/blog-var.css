@@ -66,14 +66,14 @@
 
     /* 超链接 */
     --blog-a-normal-color: var(--color-primary);
-    --blog-a-normal-hover: var(--color-primary-dark);
-    --blog-a-normal-active: var(--color-primary);
+    --blog-a-normal-hover: var(--color-primary);
+    --blog-a-normal-active: var(--color-primary-dark);
 
     --blog-a-visited-color: var(--color-link-visited);
-    --blog-a-visited-hover: var(--color-link-visited-h);
-    --blog-a-visited-active: var(--color-link-visited);
+    --blog-a-visited-hover: var(--color-link-visited);
+    --blog-a-visited-active: var(--color-link-visited-h);
 
-    --blog-a-disabled-color: var(--color-text-secondary);
+    --blog-a-disabled-color: var(--color-text-disabled);
     --blog-a-disabled-hover: var(--color-text-disabled);
     --blog-a-disabled-active: var(--color-text-secondary);
 
