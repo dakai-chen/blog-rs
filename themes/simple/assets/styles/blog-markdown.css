@@ -159,39 +159,6 @@
     margin-bottom: 0 !important;
 }
 
-.markdown blockquote {
-    border-left: 0.25rem solid var(--color-gray-300);
-    background-color: #F3F3F3;
-    padding: 0.375rem 1rem;
-    color: var(--color-text-secondary);
-}
-
-.markdown blockquote>*:first-child {
-    margin-top: 0 !important;
-}
-
-.markdown blockquote>*:last-child {
-    margin-bottom: 0 !important;
-}
-
-.markdown blockquote p,
-.markdown blockquote span,
-.markdown blockquote strong,
-.markdown blockquote b,
-.markdown blockquote em,
-.markdown blockquote i,
-.markdown blockquote code {
-    color: inherit;
-}
-
-.markdown blockquote pre * {
-    color: initial;
-}
-
-.markdown blockquote blockquote {
-    padding-right: 0;
-}
-
 .markdown .table-box {
     overflow-x: auto;
 }
@@ -227,8 +194,8 @@
     font-size: 1rem;
     border-radius: 4px;
     padding: 0.125rem 0.375rem;
-    background-color: #F4F4F4;
-    border: 1px solid #c9c9c9;
+    background-color: #f8f8f8;
+    border: 1px solid #a7a7a7;
 }
 
 .markdown pre>code {
@@ -266,6 +233,43 @@
 
 .markdown dd {
     padding: 0 1.5rem;
+}
+
+/*******************************************************************************
+ * 引用块
+ ******************************************************************************/
+
+.markdown blockquote {
+    border-left: 0.25rem solid var(--color-gray-300);
+    background-color: #F3F3F3;
+    padding: 0.375rem 1rem;
+    color: var(--color-text-secondary);
+}
+
+.markdown blockquote>*:first-child {
+    margin-top: 0 !important;
+}
+
+.markdown blockquote>*:last-child {
+    margin-bottom: 0 !important;
+}
+
+.markdown blockquote p,
+.markdown blockquote span,
+.markdown blockquote strong,
+.markdown blockquote b,
+.markdown blockquote em,
+.markdown blockquote i,
+.markdown blockquote code {
+    color: inherit;
+}
+
+.markdown blockquote pre * {
+    color: initial;
+}
+
+.markdown blockquote blockquote {
+    padding-right: 0;
 }
 
 /*******************************************************************************
