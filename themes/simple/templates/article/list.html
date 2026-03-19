@@ -67,11 +67,11 @@
         </li>
         {% endif %}
         <!-- 页码 -->
-        {% for item in context.page_links.list %}
-        {% if item.is_current %}
-        <li><a class="active" href="{{ item.link }}">{{ item.page }}</a></li>
+        {% for page in context.page_links.list %}
+        {% if page.is_current %}
+        <li><a class="active" href="{{ page.link }}">{{ page.num }}</a></li>
         {% else %}
-        <li><a href="{{ item.link }}">{{ item.page }}</a></li>
+        <li><a href="{{ page.link }}">{{ page.num }}</a></li>
         {% endif %}
         {% endfor %}
         <!-- 下一页 -->

@@ -46,7 +46,7 @@ impl From<ArticleListItemBo> for ArticleListItemVo {
 #[derive(Debug, Clone, Serialize)]
 pub struct PageNumberLinkVo {
     /// 页码
-    pub page: u64,
+    pub num: u64,
     /// 页码跳转链接
     pub link: String,
     /// 是否为当前选中的页码
@@ -71,7 +71,7 @@ impl PageLinksVo {
     pub fn from(page_navigation: &PageNavigation, search: &SearchArticleDto) -> Self {
         let a = |page| Self::build_link("/articles", page, search);
         let b = |page| PageNumberLinkVo {
-            page,
+            num: page,
             link: a(page),
             is_current: page == page_navigation.current_page,
         };
