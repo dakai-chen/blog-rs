@@ -7,6 +7,12 @@
 <li><span>关于</span></li>
 {% endblock breadcrumb %}
 
+{% block admin_menu %}
+{% if context.article_id %}
+<li><a href="/articles/{{ context.article_id }}">原文</a></li>
+{% endif %}
+{% endblock admin_menu %}
+
 {% block main %}
 <!-- 文章 -->
 <article class="article">
