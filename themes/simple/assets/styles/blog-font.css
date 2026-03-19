@@ -1,35 +1,23 @@
 :root {
-    --blog-font-family-text:
+    --font-family-text:
         -apple-system,
         BlinkMacSystemFont,
-        system-ui,
-        ui-sans-serif,
-        "PingFang SC",
-        "Hiragino Sans GB",
         "Helvetica Neue",
-        "Segoe UI Variable",
-        "Segoe UI",
-        "Microsoft YaHei UI",
+        "PingFang SC",
         "Microsoft YaHei",
-        "微软雅黑",
+        "Source Han Sans SC",
         "Noto Sans CJK SC",
         "WenQuanYi Micro Hei",
-        Roboto,
-        Arial,
-        sans-serif,
-        "Apple Color Emoji",
-        "Segoe UI Emoji",
-        "Segoe UI Symbol";
+        "MiSans L3",
+        "Segoe UI",
+        sans-serif;
 
-    --blog-font-family-code:
-        "SF Mono",
-        SFMono-Regular,
-        "Menlo",
-        "Monaco",
-        "Consolas",
-        "Microsoft YaHei Mono",
-        "SimHei",
-        "DejaVu Sans Mono",
+    --font-family-code:
+        Menlo,
+        Monaco,
+        Consolas,
+        "Andale Mono",
+        "lucida console",
         "Courier New",
         monospace;
 }
@@ -48,11 +36,11 @@
 }
 
 body {
-    font-family: var(--blog-font-family-text);
+    font-family: var(--font-family-text);
 }
 
 pre,
 code,
 .code-block-box {
-    font-family: var(--blog-font-family-code);
+    font-family: var(--font-family-code);
 }
