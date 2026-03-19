@@ -43,11 +43,77 @@ impl From<ArticleListItemBo> for ArticleListItemVo {
     }
 }
 
+#[derive(Debug, Clone, Serialize)]
+pub struct PageNumberLinkVo {
+    /// 页码
+    pub page: u64,
+    /// 页码跳转链接
+    pub link: String,
+    /// 是否为当前选中的页码
+    pub is_current: bool,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct PageLinksVo {
+    /// 开始页
+    pub head: String,
+    /// 上一页
+    pub prev: Option<String>,
+    /// 下一页
+    pub next: Option<String>,
+    /// 结束页
+    pub tail: Option<String>,
+    /// 页码表
+    pub list: Vec<PageNumberLinkVo>,
+}
+
+impl PageLinksVo {
+    pub fn from(page_navigation: &PageNavigation, search: &SearchArticleDto) -> Self {
+        let a = |page| Self::build_link("/articles", page, search);
+        let b = |page| PageNumberLinkVo {
+            page,
+            link: a(page),
+            is_current: page == page_navigation.current_page,
+        };
+        Self {
+            head: a(1),
+            prev: page_navigation.prev.map(a),
+            next: page_navigation.next.map(a),
+            tail: page_navigation.tail.map(a),
+            list: page_navigation.list.iter().copied().map(b).collect(),
+        }
+    }
+
+    fn build_link(base_url: &str, page: u64, search: &SearchArticleDto) -> String {
+        let mut params = Vec::with_capacity(3);
+
+        if let Some(q) = &search.q {
+            if !q.is_empty() {
+                params.push(format!("q={}", urlencoding::encode(q)));
+            }
+        }
+        if let Some(size) = search.size {
+            params.push(format!("size={size}"));
+        }
+        if page != 1 {
+            params.push(format!("page={page}"));
+        }
+
+        if params.is_empty() {
+            format!("{base_url}")
+        } else {
+            format!("{base_url}?{}", params.join("&"))
+        }
+    }
+}
+
 /// 文章列表页面
 #[derive(Debug, Clone, Serialize)]
 pub struct ArticleListVo {
     /// 文章列表数据
     pub items: Vec<ArticleListItemVo>,
+    /// 分页链接
+    pub page_links: PageLinksVo,
     /// 分页导航栏
     pub page_navigation: PageNavigation,
     /// 文章搜索条件
@@ -64,6 +130,7 @@ impl ArticleListVo {
                 .into_iter()
                 .map(ArticleListItemVo::from)
                 .collect(),
+            page_links: PageLinksVo::from(&page_navigation, &search),
             page_navigation,
             search,
         })

@@ -16,7 +16,7 @@ pub struct PageNavigation {
     /// 结束页
     pub tail: Option<u64>,
     /// 页码表
-    pub list: Option<Vec<u64>>,
+    pub list: Vec<u64>,
 }
 
 impl PageNavigation {
@@ -75,7 +75,7 @@ impl PageNavigation {
             } else {
                 Some(page_n)
             },
-            list: range.map(|(s, e)| (s..=e).collect()),
+            list: range.map(|(s, e)| (s..=e).collect()).unwrap_or_default(),
         })
     }
 }

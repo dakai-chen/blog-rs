@@ -56,33 +56,33 @@
 <nav class="pagination">
     <ul>
         <!-- 首页 -->
-        <li><a href="javascript:void(0)" data-p="{{ context.page_navigation.head }}">{{ "首页" }}</a>
+        <li><a href="{{ context.page_links.head }}">{{ "首页" }}</a>
         </li>
         <!-- 上一页 -->
-        {% if context.page_navigation.prev %}
-        <li><a href="javascript:void(0)" data-p="{{ context.page_navigation.prev }}">{{ "上一页" }}</a>
+        {% if context.page_links.prev %}
+        <li><a href="{{ context.page_links.prev }}">{{ "上一页" }}</a>
         </li>
         {% else %}
         <li><a class="disabled" href="javascript:void(0)">{{ "上一页" }}</a>
         </li>
         {% endif %}
         <!-- 页码 -->
-        {% for n in context.page_navigation.list %}
-        {% if context.page_navigation.current_page == n %}
-        <li><a class="active" href="javascript:void(0)" data-p="{{ n }}">{{ n }}</a></li>
+        {% for item in context.page_links.list %}
+        {% if item.is_current %}
+        <li><a class="active" href="{{ item.link }}">{{ item.page }}</a></li>
         {% else %}
-        <li><a href="javascript:void(0)" data-p="{{ n }}">{{ n }}</a></li>
+        <li><a href="{{ item.link }}">{{ item.page }}</a></li>
         {% endif %}
         {% endfor %}
         <!-- 下一页 -->
-        {% if context.page_navigation.next %}
-        <li><a href="javascript:void(0)" data-p="{{ context.page_navigation.next }}">{{ "下一页" }}</a></li>
+        {% if context.page_links.next %}
+        <li><a href="{{ context.page_links.next }}">{{ "下一页" }}</a></li>
         {% else %}
         <li><a class="disabled" href="javascript:void(0)">{{ "下一页" }}</a></li>
         {% endif %}
         <!-- 尾页 -->
-        {% if context.page_navigation.tail %}
-        <li><a href="javascript:void(0)" data-p="{{ context.page_navigation.tail }}">{{ "尾页" }}</a></li>
+        {% if context.page_links.tail %}
+        <li><a href="{{ context.page_links.tail }}">{{ "尾页" }}</a></li>
         {% else %}
         <li><a class="disabled" href="javascript:void(0)">{{ "尾页" }}</a></li>
         {% endif %}
