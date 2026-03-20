@@ -186,25 +186,23 @@
     width: 100%;
 }
 
-.markdown table tr {
-    border: 1px solid var(--color-md-table-border);
+.markdown table thead tr {
+    border-bottom: 2px solid var(--color-md-table-border);
 }
 
-.markdown thead {
-    background-color: var(--color-bg);
+.markdown table tbody tr {
+    border-top: 1px solid var(--color-md-table-border);
 }
 
 .markdown table th {
     font-weight: bold;
     color: var(--color-md-text);
-    border: 1px solid var(--color-md-table-border);
-    padding: 0.375rem 0.75rem;
+    padding: 0.5rem 0.75rem;
     text-align: left;
 }
 
 .markdown table td {
-    border: 1px solid var(--color-md-table-border);
-    padding: 0.375rem 0.75rem;
+    padding: 0.5rem 0.75rem;
 }
 
 .markdown code,
