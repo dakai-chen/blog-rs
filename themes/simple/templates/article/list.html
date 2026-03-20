@@ -56,15 +56,12 @@
 <nav class="pagination">
     <ul>
         <!-- 首页 -->
-        <li><a href="{{ context.page_links.head }}">{{ "首页" }}</a>
-        </li>
+        <li><a href="{{ context.page_links.head }}">{{ "首页" }}</a></li>
         <!-- 上一页 -->
         {% if context.page_links.prev %}
-        <li><a href="{{ context.page_links.prev }}">{{ "上一页" }}</a>
-        </li>
+        <li><a href="{{ context.page_links.prev }}">{{ "上一页" }}</a></li>
         {% else %}
-        <li><a class="disabled" href="javascript:void(0)">{{ "上一页" }}</a>
-        </li>
+        <li><a class="disabled" href="javascript:void(0)">{{ "上一页" }}</a></li>
         {% endif %}
         <!-- 页码 -->
         {% for page in context.page_links.list %}
