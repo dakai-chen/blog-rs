@@ -400,6 +400,7 @@ a.btn:active {
 .pagination>ul {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .pagination li:not(:first-child) {
