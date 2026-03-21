@@ -205,6 +205,14 @@
     text-align: left;
 }
 
+.markdown table th[align="center"] {
+    text-align: center;
+}
+
+.markdown table th[align="right"] {
+    text-align: right;
+}
+
 .markdown table td {
     padding: 0.5rem 0.75rem;
 }
