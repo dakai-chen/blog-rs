@@ -165,7 +165,7 @@ a.btn:active {
     display: flex;
     flex-direction: column;
     padding-bottom: 0.5rem;
-    border-bottom: 0.2rem solid var(--color-header-border);
+    border-bottom: 2px solid var(--color-header-border);
 }
 
 /*******************************************************************************
@@ -174,7 +174,7 @@ a.btn:active {
 
 .container>footer {
     padding-top: 0.5rem;
-    border-top: 0.2rem solid var(--color-footer-border);
+    border-top: 2px solid var(--color-footer-border);
 }
 
 /*******************************************************************************
