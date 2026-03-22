@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 # 框架与运行时
-boluo = { git = "https://github.com/dakai-chen/boluo", branch = "body-downcast", features = [
+boluo = { git = "https://github.com/dakai-chen/boluo", features = [
     "static-file",
 ] }
 boluo-extra = { git = "https://github.com/dakai-chen/boluo-extra", features = [
@@ -78,4 +78,4 @@ human_format = "1.2.1"
 walkdir = "2.5.0"
 
 [patch.crates-io]
-boluo-core = { git = "https://github.com/dakai-chen/boluo", branch = "body-downcast" }
+boluo-core = { git = "https://github.com/dakai-chen/boluo" }

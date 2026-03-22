@@ -216,7 +216,7 @@ dependencies = [
 [[package]]
 name = "boluo"
 version = "0.7.0"
-source = "git+https://github.com/dakai-chen/boluo?branch=body-downcast#09c01df879dc3a483c82349637caf5882c3e3135"
+source = "git+https://github.com/dakai-chen/boluo#09c01df879dc3a483c82349637caf5882c3e3135"
 dependencies = [
  "boluo-core",
  "boluo-macros",
@@ -240,7 +240,7 @@ dependencies = [
 [[package]]
 name = "boluo-core"
 version = "0.6.0"
-source = "git+https://github.com/dakai-chen/boluo?branch=body-downcast#09c01df879dc3a483c82349637caf5882c3e3135"
+source = "git+https://github.com/dakai-chen/boluo#09c01df879dc3a483c82349637caf5882c3e3135"
 dependencies = [
  "bytes",
  "futures-core",
@@ -266,7 +266,7 @@ dependencies = [
 [[package]]
 name = "boluo-macros"
 version = "0.2.1"
-source = "git+https://github.com/dakai-chen/boluo?branch=body-downcast#09c01df879dc3a483c82349637caf5882c3e3135"
+source = "git+https://github.com/dakai-chen/boluo#09c01df879dc3a483c82349637caf5882c3e3135"
 dependencies = [
  "proc-macro2",
  "quote",
