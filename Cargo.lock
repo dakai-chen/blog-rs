@@ -214,6 +214,52 @@ dependencies = [
 ]
 
 [[package]]
+name = "blog-rs"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "argon2",
+ "base32",
+ "boluo",
+ "boluo-extra",
+ "bytesize",
+ "chrono",
+ "comrak",
+ "config",
+ "dotenvy",
+ "futures-util",
+ "hex",
+ "human_format",
+ "humantime-serde",
+ "jiff",
+ "jsonwebtoken",
+ "lol_html",
+ "mime",
+ "rand 0.10.0",
+ "regex",
+ "serde",
+ "serde_json",
+ "serde_with",
+ "sha2",
+ "sqlx",
+ "syntect",
+ "sysinfo",
+ "tera",
+ "thiserror",
+ "time",
+ "tokio",
+ "tokio-cron-scheduler",
+ "toml",
+ "totp-rs",
+ "tracing",
+ "tracing-appender",
+ "tracing-subscriber",
+ "urlencoding",
+ "uuid",
+ "walkdir",
+]
+
+[[package]]
 name = "boluo"
 version = "0.7.0"
 source = "git+https://github.com/dakai-chen/boluo#09c01df879dc3a483c82349637caf5882c3e3135"
@@ -2048,52 +2094,6 @@ dependencies = [
  "libc",
  "wasi",
  "windows-sys 0.61.2",
-]
-
-[[package]]
-name = "myblog"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "argon2",
- "base32",
- "boluo",
- "boluo-extra",
- "bytesize",
- "chrono",
- "comrak",
- "config",
- "dotenvy",
- "futures-util",
- "hex",
- "human_format",
- "humantime-serde",
- "jiff",
- "jsonwebtoken",
- "lol_html",
- "mime",
- "rand 0.10.0",
- "regex",
- "serde",
- "serde_json",
- "serde_with",
- "sha2",
- "sqlx",
- "syntect",
- "sysinfo",
- "tera",
- "thiserror",
- "time",
- "tokio",
- "tokio-cron-scheduler",
- "toml",
- "totp-rs",
- "tracing",
- "tracing-appender",
- "tracing-subscriber",
- "urlencoding",
- "uuid",
- "walkdir",
 ]
 
 [[package]]
