@@ -79,7 +79,6 @@ fn build_web() -> Router {
 fn build_api() -> Router {
     Router::new()
         // 系统模块路由
-        .mount(api::system::info)
         .mount(api::system::get_log_level)
         .mount(api::system::set_log_level)
         .mount(api::system::get_shutdown_timeout)
