@@ -17,7 +17,9 @@ body {
     background-color: var(--color-body-bg);
     color: var(--color-text);
     line-height: 1.5;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
 }
 
 ol {
@@ -161,7 +163,7 @@ a.btn:active {
  * 顶部
  ******************************************************************************/
 
-.container>header {
+.container > header {
     display: flex;
     flex-direction: column;
     padding-bottom: 0.5rem;
@@ -172,7 +174,7 @@ a.btn:active {
  * 底部
  ******************************************************************************/
 
-.container>footer {
+.container > footer {
     padding-top: 0.5rem;
     border-top: 2px solid var(--color-footer-border);
 }
@@ -181,7 +183,7 @@ a.btn:active {
  * 主体
  ******************************************************************************/
 
-.container>main {
+.container > main {
     padding: 1rem 0;
 }
 
@@ -204,7 +206,7 @@ a.btn:active {
     white-space: nowrap;
 }
 
-.logo>img {
+.logo > img {
     height: 2rem;
     vertical-align: middle;
 }
@@ -219,7 +221,7 @@ a.btn:active {
     justify-content: space-between;
 }
 
-.toolbar>:last-child {
+.toolbar > :last-child {
     flex: 1 1 auto;
 }
 
@@ -227,19 +229,19 @@ a.btn:active {
  * 面包屑导航栏
  ******************************************************************************/
 
-.breadcrumb>ol {
+.breadcrumb > ol {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
 }
 
-.breadcrumb>ol>li:not(:last-child)::after {
+.breadcrumb > ol > li:not(:last-child)::after {
     content: "/";
     padding: 0 0.375rem;
     color: var(--color-breadcrumb-delimiter);
 }
 
-.breadcrumb>ol>li:last-child a {
+.breadcrumb > ol > li:last-child a {
     --color-link-text: var(--color-breadcrumb-disabled);
     --color-link-text-hover: var(--color-breadcrumb-disabled);
     --color-link-text-active: var(--color-breadcrumb-disabled);
@@ -247,7 +249,7 @@ a.btn:active {
     pointer-events: none;
 }
 
-.breadcrumb>ol>li span {
+.breadcrumb > ol > li span {
     color: var(--color-breadcrumb-disabled);
 }
 
@@ -262,7 +264,7 @@ a.btn:active {
     align-items: center;
 }
 
-.menu>li:not(:first-child)::before {
+.menu > li:not(:first-child)::before {
     content: "|";
     padding: 0 0.375rem;
     color: var(--color-menu-delimiter);
@@ -280,13 +282,13 @@ a.btn:active {
     margin-top: 1rem;
 }
 
-.module-nav>ul {
+.module-nav > ul {
     display: flex;
     flex-direction: column;
     text-align: center;
 }
 
-.module-nav>ul>li:not(:first-child) {
+.module-nav > ul > li:not(:first-child) {
     margin-top: 0.5rem;
 }
 
@@ -299,7 +301,7 @@ a.btn:active {
     flex-direction: column;
 }
 
-.form>*:not(:first-child) {
+.form > *:not(:first-child) {
     margin-top: 0.5rem;
 }
 
@@ -307,21 +309,21 @@ a.btn:active {
     display: flex;
 }
 
-.form-input-group>* {
+.form-input-group > * {
     border: 1px solid var(--color-form-border);
 }
 
-.form-input-group>*:not(:first-child) {
+.form-input-group > *:not(:first-child) {
     border-left: none;
 }
 
-.form-input-group>label {
+.form-input-group > label {
     padding: 0.375rem 0.75rem;
     color: var(--color-form-label-text);
     background-color: var(--color-form-label-bg);
 }
 
-.form-input-group>input {
+.form-input-group > input {
     flex: 1 1 auto;
     width: 1%;
     min-width: 0;
@@ -332,7 +334,7 @@ a.btn:active {
     color: var(--color-form-text);
 }
 
-.form-input-group>textarea {
+.form-input-group > textarea {
     flex: 1 1 auto;
     width: 1%;
     min-width: 0;
@@ -345,7 +347,7 @@ a.btn:active {
     min-height: calc(1.5rem + 0.75rem + 2px);
 }
 
-.form-input-group>.form-radio-group {
+.form-input-group > .form-radio-group {
     flex: 1 1 auto;
 }
 
@@ -362,12 +364,12 @@ a.btn:active {
     color: var(--color-form-text);
 }
 
-.form-radio-group-item input[type=radio] {
+.form-radio-group-item input[type="radio"] {
     width: 1rem;
     height: 1rem;
 }
 
-.form-radio-group-item>*:not(:first-child) {
+.form-radio-group-item > *:not(:first-child) {
     margin-left: 0.375rem;
 }
 
@@ -383,7 +385,7 @@ a.btn:active {
     border: 1px solid var(--color-alert-border);
 }
 
-.alert>*:not(:first-child) {
+.alert > *:not(:first-child) {
     margin-top: 0.75rem;
 }
 
@@ -397,7 +399,7 @@ a.btn:active {
     border-top: 1px solid var(--color-border);
 }
 
-.pagination>ul {
+.pagination > ul {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -429,7 +431,7 @@ a.btn:active {
     line-height: 1.5;
 }
 
-.article-list>li {
+.article-list > li {
     display: flex;
     align-items: center;
 }
@@ -453,19 +455,19 @@ a.btn:active {
     color: var(--color-article-list-date);
 }
 
-.article-list>li>a:visited:not(.a-disabled) {
+.article-list > li > a:visited:not(.a-disabled) {
     color: var(--color-link-visited);
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 
-.article-list>li>a:visited:hover:not(.a-disabled) {
+.article-list > li > a:visited:hover:not(.a-disabled) {
     color: var(--color-link-visited-hover);
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 
-.article-list>li>a:visited:active:not(.a-disabled) {
+.article-list > li > a:visited:active:not(.a-disabled) {
     color: var(--color-link-visited-active);
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
@@ -505,7 +507,7 @@ a.btn:active {
     color: var(--color-md-metadata);
 }
 
-.article .article-metadata>* {
+.article .article-metadata > * {
     white-space: nowrap;
 }
 
@@ -528,7 +530,7 @@ a.btn:active {
     margin-top: 0.5rem;
 }
 
-.article .article-tags>* {
+.article .article-tags > * {
     padding: 0 0.375rem;
 }
 
@@ -640,7 +642,7 @@ a.btn:active {
     padding: 1rem;
 }
 
-.modal-footer>*:not(:first-child) {
+.modal-footer > *:not(:first-child) {
     margin-left: 0.375rem;
 }
 
@@ -723,11 +725,11 @@ a.btn:active {
     line-height: 1.5;
 }
 
-.session-info>*:not(:first-child) {
+.session-info > *:not(:first-child) {
     margin-top: 0.5rem;
 }
 
-.session-info-item>span:first-child::after {
+.session-info-item > span:first-child::after {
     content: ":";
     padding: 0 0.375rem;
 }
@@ -746,11 +748,11 @@ a.btn:active {
     width: 100%;
 }
 
-.tips>*:last-child {
+.tips > *:last-child {
     margin-bottom: 1.75rem;
 }
 
-.tips>* {
+.tips > * {
     margin: 0 auto 0.75rem auto;
 }
 

@@ -1,24 +1,11 @@
 :root {
     --font-family-text:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Helvetica Neue",
-        "PingFang SC",
-        "Microsoft YaHei",
-        "Source Han Sans SC",
-        "Noto Sans CJK SC",
-        "WenQuanYi Micro Hei",
-        "MiSans L3",
-        "Segoe UI",
-        sans-serif;
+        -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC",
+        "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC",
+        "WenQuanYi Micro Hei", "MiSans L3", "Segoe UI", sans-serif;
 
     --font-family-code:
-        Menlo,
-        Monaco,
-        Consolas,
-        "Andale Mono",
-        "lucida console",
-        "Courier New",
+        Menlo, Monaco, Consolas, "Andale Mono", "lucida console", "Courier New",
         monospace;
 }
 
