@@ -23,7 +23,6 @@ pub async fn about(
     if let Some(about_article_id) = &crate::config::get().article.about_article_id {
         let params = GetArticleBo {
             article_id: about_article_id.into(),
-            ignore_status: true,
         };
         let Some(article) =
             crate::service::article::get_article(admin.as_deref(), &visitor, &params, &mut db)

@@ -143,8 +143,6 @@ pub struct ArticleListBo {
 pub struct GetArticleBo<'a> {
     /// 文章ID
     pub article_id: Cow<'a, str>,
-    /// 忽视文章状态条件获取文章
-    pub ignore_status: bool,
 }
 
 /// 访客可见的文章详情

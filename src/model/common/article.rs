@@ -19,3 +19,13 @@ pub enum SearchArticleSort {
     /// 排序规则：updated_at DESC NULLS FIRST
     ByUpdatedAtDesc,
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum ArticleAccessibility {
+    /// 可见
+    Visible,
+    /// 不可见
+    Invisible,
+    /// 需要密码
+    NeedPassword,
+}

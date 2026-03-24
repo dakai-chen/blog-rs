@@ -16,7 +16,7 @@ use crate::model::bo::failed_attempts::FailedAttemptsBanBo;
 use crate::model::bo::resource::{RemoveResourceBo, UploadResourceOptionsBo};
 use crate::model::bo::visitor::VisitorBo;
 use crate::model::co::article::{VisitorArticleAccessRecordCo, VisitorArticleAccessRecordCoIdGen};
-use crate::model::common::article::{ArticleStatus, SearchArticleSort};
+use crate::model::common::article::{ArticleAccessibility, ArticleStatus, SearchArticleSort};
 use crate::model::common::resource::ResourceKind;
 use crate::model::po::article::{ArticlePo, SearchArticle};
 use crate::model::po::article_attachment::ArticleAttachmentPo;
@@ -236,15 +236,21 @@ pub async fn get_article(
     let Some(mut article) = crate::storage::db::article::find(&bo.article_id, db).await? else {
         return Ok(None);
     };
-    if admin.is_none() && !bo.ignore_status && article.status != ArticleStatus::Published {
-        return Ok(None);
-    };
-    if admin.is_none() && article.password.is_some() && !visitor.has_article(&article.id).await? {
-        return Err(AppErrorMeta::ArticleLocked {
-            article_id: article.id,
-            title: article.title,
+
+    match check_article_accessibility(admin, visitor, &article).await? {
+        ArticleAccessibility::Visible => {
+            // 文章可见，继续下面的流程
         }
-        .into_error());
+        ArticleAccessibility::Invisible => {
+            return Ok(None);
+        }
+        ArticleAccessibility::NeedPassword => {
+            return Err(AppErrorMeta::ArticleLocked {
+                article_id: article.id,
+                title: article.title,
+            }
+            .into_error());
+        }
     }
 
     let attachments = list_attachment(&article.id, db).await?;
@@ -344,6 +350,7 @@ pub async fn download_attachment(
     if attachment.article_id != bo.article_id {
         return Ok(None);
     }
+
     let Some(article) = crate::storage::db::article::find(&bo.article_id, db).await? else {
         return Err(AppErrorMeta::Internal
             .with_message("附件关联的文章不存在")
@@ -352,13 +359,23 @@ pub async fn download_attachment(
                 attachment.id, attachment.article_id
             )));
     };
-    if admin.is_none() && article.password.is_some() && !visitor.has_article(&article.id).await? {
-        return Err(AppErrorMeta::ArticleLocked {
-            article_id: article.id,
-            title: article.title,
+
+    match check_article_accessibility(admin, visitor, &article).await? {
+        ArticleAccessibility::Visible => {
+            // 文章可见，继续下面的流程
         }
-        .into_error());
+        ArticleAccessibility::Invisible => {
+            return Ok(None);
+        }
+        ArticleAccessibility::NeedPassword => {
+            return Err(AppErrorMeta::ArticleLocked {
+                article_id: article.id,
+                title: article.title,
+            }
+            .into_error());
+        }
     }
+
     let Some(resource) = crate::storage::db::resource::find(&attachment.resource_id, db).await?
     else {
         return Err(AppErrorMeta::Internal
@@ -515,4 +532,25 @@ async fn batch_refresh_article_render_content(articles: &mut [ArticlePo]) -> Res
     });
 
     Ok(())
+}
+
+pub async fn check_article_accessibility(
+    admin: Option<&AdminBo>,
+    visitor: &VisitorBo,
+    article: &ArticlePo,
+) -> Result<ArticleAccessibility, AppError> {
+    if admin.is_some() {
+        return Ok(ArticleAccessibility::Visible);
+    }
+    if article.status != ArticleStatus::Published && !is_about_article(&article) {
+        return Ok(ArticleAccessibility::Invisible);
+    };
+    if article.password.is_some() && !visitor.has_article(&article.id).await? {
+        return Ok(ArticleAccessibility::NeedPassword);
+    }
+    Ok(ArticleAccessibility::Visible)
+}
+
+pub fn is_about_article(article: &ArticlePo) -> bool {
+    crate::config::get().article.about_article_id.as_deref() == Some(&article.id)
 }

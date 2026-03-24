@@ -195,7 +195,6 @@ impl<'a> Into<GetArticleBo<'a>> for GetArticleDto {
     fn into(self) -> GetArticleBo<'a> {
         GetArticleBo {
             article_id: self.article_id.into(),
-            ignore_status: false,
         }
     }
 }
