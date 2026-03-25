@@ -27,42 +27,36 @@
 .markdown h6 {
     color: var(--color-md-title);
     font-weight: bold;
+    line-height: 1.5;
+    margin: 1.5em 0 1rem;
 }
 
 .markdown h1 {
-    font-size: 1.72rem;
-    line-height: 1.5;
-    margin: 1.5rem 0;
+    font-size: 2rem;
+    padding-bottom: 0.625rem;
+    border-bottom: 1px solid var(--color-md-h-border);
 }
 
 .markdown h2 {
     font-size: 1.5rem;
-    line-height: 1.5;
-    margin: 1.4rem 0;
+    padding-bottom: 0.625rem;
+    border-bottom: 1px solid var(--color-md-h-border);
 }
 
 .markdown h3 {
-    font-size: 1.31rem;
-    line-height: 1.5;
-    margin: 1.3rem 0;
+    font-size: 1.25rem;
 }
 
 .markdown h4 {
-    font-size: 1.145rem;
-    line-height: 1.5;
-    margin: 1.2rem 0;
+    font-size: 1.125rem;
 }
 
 .markdown h5 {
     font-size: 1rem;
-    line-height: 1.5;
-    margin: 1.1rem 0;
 }
 
 .markdown h6 {
     font-size: 1rem;
-    line-height: 1.5;
-    margin: 1rem 0;
 }
 
 .markdown h1 .anchor,

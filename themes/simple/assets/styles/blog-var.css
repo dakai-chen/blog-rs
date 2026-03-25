@@ -140,6 +140,8 @@
     --color-md-title: var(--color-text);
     --color-md-metadata: var(--color-text-secondary);
 
+    --color-md-h-border: #e2e4e9;
+
     --color-md-hr: var(--color-border);
     --color-md-table-border: var(--color-border);
     --color-md-table-hover-bg: var(--color-bg);
