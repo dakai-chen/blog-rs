@@ -59,64 +59,13 @@
     font-size: 1rem;
 }
 
-.markdown h1 .anchor,
-.markdown h2 .anchor,
-.markdown h3 .anchor,
-.markdown h4 .anchor,
-.markdown h5 .anchor,
-.markdown h6 .anchor {
-    margin-right: 0.75rem;
-}
-
-.markdown h1 .anchor::before,
-.markdown h2 .anchor::before,
-.markdown h3 .anchor::before,
-.markdown h4 .anchor::before,
-.markdown h5 .anchor::before,
-.markdown h6 .anchor::before {
-    color: var(--color-link);
-}
-
-.markdown h1 .anchor:hover::before,
-.markdown h2 .anchor:hover::before,
-.markdown h3 .anchor:hover::before,
-.markdown h4 .anchor:hover::before,
-.markdown h5 .anchor:hover::before,
-.markdown h6 .anchor:hover::before {
-    color: var(--color-link-hover);
-}
-
-.markdown h1 .anchor:active::before,
-.markdown h2 .anchor:active::before,
-.markdown h3 .anchor:active::before,
-.markdown h4 .anchor:active::before,
-.markdown h5 .anchor:active::before,
-.markdown h6 .anchor:active::before {
-    color: var(--color-link-active);
-}
-
-.markdown h1 .anchor::before {
-    content: "#";
-}
-
-.markdown h2 .anchor::before {
-    content: "##";
-}
-
-.markdown h3 .anchor::before {
-    content: "###";
-}
-
-.markdown h4 .anchor::before {
-    content: "####";
-}
-
-.markdown h5 .anchor::before {
-    content: "#####";
-}
-
-.markdown h6 .anchor::before {
-    content: "######";
+.markdown h1 .anchor:hover,
+.markdown h2 .anchor:hover,
+.markdown h3 .anchor:hover,
+.markdown h4 .anchor:hover,
+.markdown h5 .anchor:hover,
+.markdown h6 .anchor:hover {
+    text-decoration: none;
 }
 
 .markdown p,
@@ -181,11 +130,11 @@
 }
 
 .markdown table thead tr {
-    border-bottom: 2px solid var(--color-md-table-border);
+    border-bottom: 1px solid var(--color-md-table-head-border);
 }
 
 .markdown table tbody tr {
-    border-top: 1px solid var(--color-md-table-border);
+    border-top: 1px solid var(--color-md-table-body-border);
 }
 
 .markdown table tbody tr:hover {
@@ -218,6 +167,7 @@
     padding: 0.125rem 0.375rem;
     background-color: var(--color-md-code-bg);
     border: 1px solid var(--color-md-code-border);
+    color: var(--color-md-code-text);
 }
 
 .markdown pre > code {
@@ -264,6 +214,7 @@
  ******************************************************************************/
 
 .markdown blockquote {
+    border: 1px solid var(--color-md-blockquote-border);
     border-left: 0.25rem solid var(--color-md-blockquote-border);
     background-color: var(--color-md-blockquote-bg);
     padding: 0.375rem 1rem;
@@ -292,10 +243,6 @@
     color: initial;
 }
 
-.markdown blockquote blockquote {
-    padding-right: 0;
-}
-
 /*******************************************************************************
  * 代码块头部 (Code Block Header)
  ******************************************************************************/
@@ -303,6 +250,7 @@
 .markdown .code-block-box {
     display: flex;
     flex-direction: column;
+    box-shadow: var(--color-md-code-block-shadow) 4px 4px 0px 0px;
 }
 
 .markdown .code-block-header {

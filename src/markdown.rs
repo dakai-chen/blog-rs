@@ -25,6 +25,27 @@ pub fn render(markdown: &str) -> anyhow::Result<String> {
     let plugins = markdown_plugins(&MARKDOWN_TO_HTML_CONFIG.syntect);
 
     comrak::create_formatter!(CustomFormatter<()>, {
+        NodeValue::Heading(nh) => |context, node, entering| {
+            if entering {
+                context.cr()?;
+                write!(context, "<h{}", nh.level)?;
+                comrak::html::render_sourcepos(context, node)?;
+                context.write_str(">")?;
+
+                if let Some(ref prefix) = context.options.extension.header_ids {
+                    let text_content = comrak::html::collect_text(node);
+                    let id = context.anchorizer.anchorize(&text_content);
+                    write!(
+                        context,
+                        "<a href=\"#{}\" aria-hidden=\"true\" class=\"anchor\" id=\"{}{}\">",
+                        id, prefix, id
+                    )?;
+                }
+            } else {
+                write!(context, "</a></h{}>", nh.level)?;
+                context.lf()?;
+            }
+        },
         NodeValue::CodeBlock(ref ncb) => |context, node, entering| {
             let child_rendering = if entering {
                 context.write_str(r#"<div class="code-block-box"><div class="code-block-header"><span>"#)?;
