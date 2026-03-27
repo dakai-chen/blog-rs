@@ -452,5 +452,6 @@ pub struct ArticleFeedConfig {
     /// Feed 返回的文章条数，不填写则使用文章的默认分页大小
     ///
     /// 注意：该值受到 allowed_page_sizes 配置的限制
+    #[serde(default)]
     pub page_size: Option<u64>,
 }
