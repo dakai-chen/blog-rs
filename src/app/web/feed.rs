@@ -23,7 +23,7 @@ pub async fn rss(
         published_at_ge: None,
         published_at_lt: None,
         page: Some(1),
-        size: Some(20),
+        size: crate::config::get().article.feed.page_size,
         sort: None,
     };
     let list = crate::service::article::search_article(None, &params, &mut db).await?;
@@ -44,7 +44,7 @@ pub async fn atom(
         published_at_ge: None,
         published_at_lt: None,
         page: Some(1),
-        size: Some(20),
+        size: crate::config::get().article.feed.page_size,
         sort: Some(SearchArticleSort::ByUpdatedAtDesc),
     };
     let list = crate::service::article::search_article(None, &params, &mut db).await?;

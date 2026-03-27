@@ -418,6 +418,8 @@ pub struct ArticleConfig {
     pub about_article_id: Option<String>,
     /// 文章分页配置
     pub pagination: ArticlePaginationConfig,
+    /// 文章 Feed 配置
+    pub feed: ArticleFeedConfig,
 }
 
 /// 游客配置
@@ -442,4 +444,13 @@ pub struct ArticlePaginationConfig {
     pub allowed_page_sizes: Vec<u64>,
     /// 分页导航栏显示的页码数量
     pub page_nav_max_visible: u64,
+}
+
+/// 文章 Feed 配置
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ArticleFeedConfig {
+    /// Feed 返回的文章条数，不填写则使用文章的默认分页大小
+    ///
+    /// 注意：该值受到 allowed_page_sizes 配置的限制
+    pub page_size: Option<u64>,
 }
