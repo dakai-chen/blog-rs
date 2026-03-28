@@ -528,7 +528,7 @@ async fn batch_refresh_article_render_content(articles: &mut [ArticlePo]) -> Res
     Ok(())
 }
 
-pub async fn check_article_accessibility(
+async fn check_article_accessibility(
     admin: Option<&AdminBo>,
     visitor: &VisitorBo,
     article: &ArticlePo,
@@ -545,6 +545,6 @@ pub async fn check_article_accessibility(
     Ok(ArticleAccessibility::Visible)
 }
 
-pub fn is_about_article(article: &ArticlePo) -> bool {
+fn is_about_article(article: &ArticlePo) -> bool {
     crate::config::get().article.about_article_id.as_deref() == Some(&article.id)
 }
