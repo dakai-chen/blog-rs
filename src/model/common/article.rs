@@ -29,3 +29,9 @@ pub enum ArticleAccessibility {
     /// 需要密码
     NeedPassword,
 }
+
+#[derive(Debug, Clone)]
+pub enum ArticleContentControl<T> {
+    NeedPassword,
+    Public(T),
+}

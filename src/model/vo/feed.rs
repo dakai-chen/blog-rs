@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 use crate::model::bo::article::{ArticleListBo, ArticleListItemBo};
-use crate::model::common::article::ArticleStatus;
+use crate::model::common::article::{ArticleContentControl, ArticleStatus};
 use crate::template::render::TemplateRenderData;
 
 /// 文章列表项
@@ -29,16 +29,29 @@ pub struct FeedListItemVo {
 
 impl From<ArticleListItemBo> for FeedListItemVo {
     fn from(value: ArticleListItemBo) -> Self {
-        Self {
-            article_id: value.article_id,
-            title: value.title,
-            markdown_content: (!value.need_password).then_some(value.markdown_content),
-            render_content: (!value.need_password).then_some(value.render_content),
-            status: value.status,
-            created_at: value.created_at,
-            updated_at: value.updated_at,
-            published_at: value.published_at,
-            need_password: value.need_password,
+        match value.content {
+            ArticleContentControl::NeedPassword => Self {
+                article_id: value.article_id,
+                title: value.title,
+                markdown_content: None,
+                render_content: None,
+                status: value.status,
+                created_at: value.created_at,
+                updated_at: value.updated_at,
+                published_at: value.published_at,
+                need_password: true,
+            },
+            ArticleContentControl::Public(content) => Self {
+                article_id: value.article_id,
+                title: value.title,
+                markdown_content: Some(content.markdown_content),
+                render_content: Some(content.render_content),
+                status: value.status,
+                created_at: value.created_at,
+                updated_at: value.updated_at,
+                published_at: value.published_at,
+                need_password: false,
+            },
         }
     }
 }

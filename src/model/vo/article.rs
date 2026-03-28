@@ -5,7 +5,7 @@ use crate::error::{AppError, AppErrorMeta};
 use crate::model::bo::article::{
     ArticleAttachmentBo, ArticleDetailBo, ArticleListBo, ArticleListItemBo,
 };
-use crate::model::common::article::ArticleStatus;
+use crate::model::common::article::{ArticleContentControl, ArticleStatus};
 use crate::model::dto::web::article::SearchArticleDto;
 use crate::template::render::TemplateRenderData;
 use crate::util::pagination::PageNavigation;
@@ -38,7 +38,7 @@ impl From<ArticleListItemBo> for ArticleListItemVo {
             created_at: value.created_at,
             updated_at: value.updated_at,
             published_at: value.published_at,
-            need_password: value.need_password,
+            need_password: matches!(value.content, ArticleContentControl::NeedPassword),
         }
     }
 }

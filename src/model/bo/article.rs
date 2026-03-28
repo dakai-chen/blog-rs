@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::error::AppError;
 use crate::model::bo::resource::{ResourceBo, UploadResourceBo};
-use crate::model::common::article::{ArticleStatus, SearchArticleSort};
+use crate::model::common::article::{ArticleContentControl, ArticleStatus, SearchArticleSort};
 use crate::model::po::article::ArticlePo;
 use crate::model::po::article_attachment::ArticleAttachmentPo;
 use crate::model::po::article_stats::ArticleStatsPo;
@@ -95,12 +95,8 @@ pub struct ArticleListItemBo {
     pub article_id: String,
     /// 标题
     pub title: String,
-    /// 摘要
-    pub excerpt: String,
-    /// Markdown 格式的正文
-    pub markdown_content: String,
-    /// 渲染后的 HTML 结果
-    pub render_content: String,
+    /// 文章内容
+    pub content: ArticleContentControl<ArticleContentBo>,
     /// 状态
     pub status: ArticleStatus,
     /// 创建时间
@@ -109,8 +105,6 @@ pub struct ArticleListItemBo {
     pub updated_at: i64,
     /// 发布时间
     pub published_at: Option<i64>,
-    /// 是否需要密码访问
-    pub need_password: bool,
 }
 
 impl From<ArticlePo> for ArticleListItemBo {
@@ -118,14 +112,19 @@ impl From<ArticlePo> for ArticleListItemBo {
         Self {
             article_id: article.id,
             title: article.title,
-            excerpt: article.excerpt,
-            markdown_content: article.markdown_content,
-            render_content: article.render_content,
+            content: if article.password.is_none() {
+                ArticleContentControl::Public(ArticleContentBo {
+                    excerpt: article.excerpt,
+                    markdown_content: article.markdown_content,
+                    render_content: article.render_content,
+                })
+            } else {
+                ArticleContentControl::NeedPassword
+            },
             status: article.status,
             created_at: article.created_at,
             updated_at: article.updated_at,
             published_at: article.published_at,
-            need_password: article.password.is_some(),
         }
     }
 }
@@ -336,7 +335,7 @@ pub struct DownloadArticleAttachmentBo<'a> {
 }
 
 /// 文章
-#[derive(Debug, Clone, sqlx::FromRow)]
+#[derive(Debug, Clone)]
 pub struct ArticleBo {
     /// 文章ID
     pub article_id: String,
@@ -378,4 +377,14 @@ impl From<ArticlePo> for ArticleBo {
             published_at: value.published_at,
         }
     }
+}
+
+#[derive(Debug, Clone)]
+pub struct ArticleContentBo {
+    /// 摘要
+    pub excerpt: String,
+    /// Markdown 格式的正文
+    pub markdown_content: String,
+    /// 渲染后的 HTML 结果
+    pub render_content: String,
 }

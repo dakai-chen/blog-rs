@@ -43,13 +43,13 @@ pub async fn detail(
     DbPoolConnection(mut db): DbPoolConnection,
 ) -> Result<impl IntoResponse, BoxError> {
     params.validate(&())?;
-    let Some(article) =
+    let Some(detail) =
         crate::service::article::get_article(admin.as_deref(), &visitor, &params.into(), &mut db)
             .await?
     else {
         return Err(AppErrorMeta::NotFound.with_message("文章不存在").into());
     };
-    let vo = ArticleDetailVo::from(article);
+    let vo = ArticleDetailVo::from(detail);
     let context = PageContext::new(vo).admin(admin.map(Into::into));
     Ok(Html(state.template.typed_render(&context)))
 }
