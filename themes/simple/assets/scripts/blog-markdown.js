@@ -8,7 +8,8 @@ function init_code_copy_btn() {
         }
 
         copyBtn.addEventListener('click', function () {
-            navigator.clipboard.writeText(codeBlock.textContent.trim()).then(() => {
+            const code = codeBlock.textContent.replace(/\n$/, '');
+            navigator.clipboard.writeText(code).then(() => {
                 tips_show("tips-item-success", "复制成功");
                 // setTimeout(() => { /* 目前不做任何事 */ }, 1000);
             }).catch(err => {
