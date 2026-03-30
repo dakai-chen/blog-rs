@@ -148,7 +148,7 @@ fn custom_render_code_block<T>(
         context
             .write_str(r#"<div class="code-block-box"><div class="code-block-header"><span>"#)?;
         if ncb.info.is_empty() {
-            comrak::html::escape(context, "plaintext")?;
+            comrak::html::escape(context, "")?;
         } else {
             comrak::html::escape(context, &ncb.info)?;
         }
