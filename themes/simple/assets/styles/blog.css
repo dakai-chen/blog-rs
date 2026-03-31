@@ -485,7 +485,7 @@ a.btn:active {
 .article .article-header {
     display: flex;
     flex-direction: column;
-    margin-bottom: 2rem;
+    margin-bottom: 2.25rem;
 }
 
 .article .article-title {
@@ -533,13 +533,13 @@ a.btn:active {
 .attachment-container {
     display: flex;
     flex-direction: column;
-    margin-top: 1.5rem;
+    margin-top: 2.25rem;
 }
 
 .attachment-list {
     display: flex;
     flex-direction: column;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
     gap: 1rem;
     max-width: 100%;
     font-size: 0.875rem;

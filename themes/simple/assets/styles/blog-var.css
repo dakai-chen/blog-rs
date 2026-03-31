@@ -169,6 +169,9 @@
     --color-md-checkbox-bg: #f9fafb;
     --color-md-checkbox-checked-bg: #374151;
 
+    --color-md-footnotes-text: var(--color-text-secondary);
+    --color-md-footnotes-border: #e2e4e9;
+
     /***************************************************************************
         滚动条
     ***************************************************************************/

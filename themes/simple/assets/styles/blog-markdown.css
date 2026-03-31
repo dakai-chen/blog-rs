@@ -361,3 +361,23 @@
 .markdown li:has(> input[type="checkbox"]) {
     list-style-type: none;
 }
+
+/*******************************************************************************
+ * 脚注
+ ******************************************************************************/
+
+.markdown .footnotes {
+    margin: 2.25rem 0 1rem;
+    padding-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--color-md-footnotes-text);
+    border-top: 1px solid var(--color-md-footnotes-border);
+}
+
+.markdown .footnotes > *:first-child {
+    margin-top: 0 !important;
+}
+
+.markdown .footnotes > *:last-child {
+    margin-bottom: 0 !important;
+}
