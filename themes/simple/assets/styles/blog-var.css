@@ -2,7 +2,7 @@
     --color-body-bg: #f7f7f2;
 
     --color-text: #4b5362;
-    --color-text-secondary: #787f8d;
+    --color-text-secondary: var(--color-text);
 
     --color-bg: var(--color-body-bg);
 
@@ -39,15 +39,15 @@
         面包屑导航栏
     ***************************************************************************/
 
-    --color-breadcrumb-delimiter: var(--color-text-secondary);
-    --color-breadcrumb-disabled: var(--color-text-secondary);
+    --color-breadcrumb-delimiter: var(--color-text);
+    --color-breadcrumb-disabled: var(--color-text);
 
     /***************************************************************************
         菜单
     ***************************************************************************/
 
-    --color-menu-delimiter: var(--color-text-secondary);
-    --color-menu-disabled: var(--color-text-secondary);
+    --color-menu-delimiter: var(--color-text);
+    --color-menu-disabled: var(--color-text);
 
     /***************************************************************************
         链接
@@ -61,8 +61,8 @@
     --color-link-visited-hover: #7c1cc4;
     --color-link-visited-active: #4a0a75;
 
-    --color-link-disabled: var(--color-text-secondary);
-    --color-link-disabled-hover: var(--color-text-secondary);
+    --color-link-disabled: var(--color-text);
+    --color-link-disabled-hover: var(--color-text);
     --color-link-disabled-active: #000;
 
     /***************************************************************************
@@ -124,7 +124,7 @@
         分页导航栏
     ***************************************************************************/
 
-    --color-pagination-link-disabled: var(--color-text-secondary);
+    --color-pagination-link-disabled: var(--color-text);
 
     /***************************************************************************
         文章列表
