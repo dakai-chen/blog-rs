@@ -3,7 +3,7 @@
 
 {% block meta %}
 {{ super() }}
-{% if context.need_password %}
+{% if context.need_password or context.status=="hidden" %}
 <meta name="robots" content="noindex,nofollow">
 {% endif %}
 {% endblock meta %}
