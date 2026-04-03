@@ -459,6 +459,7 @@ a.btn:active {
     --color-link: var(--color-article-hidden-link);
     --color-link-hover: var(--color-article-hidden-link-hover);
     --color-link-active: var(--color-article-hidden-link-active);
+    opacity: 0.5;
 }
 
 .article-list .a-disabled {

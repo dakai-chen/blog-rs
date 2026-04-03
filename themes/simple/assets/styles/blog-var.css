@@ -132,13 +132,13 @@
 
     --color-article-list-date: var(--color-text-secondary);
 
-    --color-article-hidden-link: #7d9fcf;
-    --color-article-hidden-link-hover: #7d9fcf;
-    --color-article-hidden-link-active: #6688b8;
+    --color-article-hidden-link: var(--color-link);
+    --color-article-hidden-link-hover: var(--color-link-hover);
+    --color-article-hidden-link-active: var(--color-link-active);
 
-    --color-article-disabled-link: #a88fc2;
-    --color-article-disabled-link-hover: #a88fc2;
-    --color-article-disabled-link-active: #8f76a8;
+    --color-article-disabled-link: var(--color-link-disabled);
+    --color-article-disabled-link-hover: var(--color-link-disabled-hover);
+    --color-article-disabled-link-active: var(--color-link-disabled-active);
 
     /***************************************************************************
         Markdown
