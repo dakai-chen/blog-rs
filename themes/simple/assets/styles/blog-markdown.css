@@ -167,7 +167,6 @@
     padding: 0.125rem 0.375rem;
     background-color: var(--color-md-code-bg);
     border: 1px solid var(--color-md-code-border);
-    color: var(--color-md-code-text);
 }
 
 .markdown pre > code {
