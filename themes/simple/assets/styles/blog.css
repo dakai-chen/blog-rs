@@ -455,19 +455,31 @@ a.btn:active {
     color: var(--color-article-list-date);
 }
 
-.article-list > li > a:visited:not(.a-disabled) {
+.article-list .a-hidden {
+    --color-link: var(--color-article-hidden-link);
+    --color-link-hover: var(--color-article-hidden-link-hover);
+    --color-link-active: var(--color-article-hidden-link-active);
+}
+
+.article-list .a-disabled {
+    --color-link: var(--color-article-disabled-link);
+    --color-link-hover: var(--color-article-disabled-link-hover);
+    --color-link-active: var(--color-article-disabled-link-active);
+}
+
+.article-list > li > a.a-published:visited {
     color: var(--color-link-visited);
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 
-.article-list > li > a:visited:hover:not(.a-disabled) {
+.article-list > li > a.a-published:visited:hover {
     color: var(--color-link-visited-hover);
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;
 }
 
-.article-list > li > a:visited:active:not(.a-disabled) {
+.article-list > li > a.a-published:visited:active {
     color: var(--color-link-visited-active);
     background-color: transparent;
     -webkit-tap-highlight-color: transparent;

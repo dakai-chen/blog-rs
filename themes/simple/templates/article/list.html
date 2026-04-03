@@ -22,28 +22,25 @@
     {% for article in context.items %}
     <li>
         {% if article.need_password %}
+            {% set_global nofollow = 'rel="nofollow"' %}
+        {% else %}
+            {% set_global nofollow = "" %}
+        {% endif %}
+
+        {% if article.status == "published" %}
+            {% set_global article_tag = "a-published" %}
+        {% elif article.status == "hidden" %}
+            {% set_global article_tag = "a-hidden" %}
+        {% else %}
+            {% set_global article_tag = "a-disabled" %}
+        {% endif %}
+
+        {% if article.need_password %}
         <img class="article-lock" src="/theme/assets/image/lock.svg" alt="锁">
-        {% if article.status == "published" %}
-        <a class="article-title" title="{{ article.title }}" href="/articles/{{ article.article_id }}" rel="nofollow">
-            {{ article.title }}
-        </a>
-        {% else %}
-        <a class="article-title a-disabled" title="{{ article.title }}" href="/articles/{{ article.article_id }}"
-            rel="nofollow">
-            {{ article.title }}
-        </a>
         {% endif %}
-        {% else %}
-        {% if article.status == "published" %}
-        <a class="article-title" title="{{ article.title }}" href="/articles/{{ article.article_id }}">
+        <a class="article-title {{ article_tag }}" title="{{ article.title }}" href="/articles/{{ article.article_id }}" {{ nofollow | safe }}>
             {{ article.title }}
         </a>
-        {% else %}
-        <a class="article-title a-disabled" title="{{ article.title }}" href="/articles/{{ article.article_id }}">
-            {{ article.title }}
-        </a>
-        {% endif %}
-        {% endif %}
         {% if article.published_at %}
         <span class="article-date">
             {{ article.published_at | date(format="%Y-%m-%d", timezone="Asia/Shanghai") }}

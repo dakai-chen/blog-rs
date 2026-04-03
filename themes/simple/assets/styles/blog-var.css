@@ -132,6 +132,14 @@
 
     --color-article-list-date: var(--color-text-secondary);
 
+    --color-article-hidden-link: rgb(26, 158, 86);
+    --color-article-hidden-link-hover: rgb(26, 158, 86);
+    --color-article-hidden-link-active: rgb(8, 110, 56);
+
+    --color-article-disabled-link: var(--color-link-disabled);
+    --color-article-disabled-link-hover: var(--color-link-disabled-hover);
+    --color-article-disabled-link-active: var(--color-link-disabled-active);
+
     /***************************************************************************
         Markdown
     ***************************************************************************/
@@ -250,12 +258,6 @@
     --color-btn-active-text: var(--color-btn-light-active-text);
     --color-btn-active-bg: var(--color-btn-light-active-bg);
     --color-btn-active-border: var(--color-btn-light-active-border);
-}
-
-.a-disabled {
-    --color-link: var(--color-link-disabled);
-    --color-link-hover: var(--color-link-disabled-hover);
-    --color-link-active: var(--color-link-disabled-active);
 }
 
 .tips-item-success {
