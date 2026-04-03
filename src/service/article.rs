@@ -104,6 +104,7 @@ pub async fn create_article(bo: CreateArticleBo, db: &mut DbConn) -> Result<Arti
             published_at: match bo.status {
                 ArticleStatus::Draft => None,
                 ArticleStatus::Private => Some(now),
+                ArticleStatus::Hidden => Some(now),
                 ArticleStatus::Published => Some(now),
             },
         };
@@ -148,7 +149,7 @@ pub async fn update_article(bo: UpdateArticleBo, db: &mut DbConn) -> Result<(), 
     article.status = bo.status;
     article.published_at = match bo.status {
         ArticleStatus::Draft => None,
-        ArticleStatus::Private | ArticleStatus::Published => {
+        ArticleStatus::Private | ArticleStatus::Hidden | ArticleStatus::Published => {
             Some(article.published_at.unwrap_or(now))
         }
     };
@@ -483,9 +484,12 @@ async fn check_article_accessibility(
     if admin.is_some() {
         return Ok(ArticleAccessibility::Visible);
     }
-    if article.status != ArticleStatus::Published && !is_about_article(&article) {
+    if !matches!(
+        article.status,
+        ArticleStatus::Published | ArticleStatus::Hidden
+    ) {
         return Ok(ArticleAccessibility::Invisible);
-    };
+    }
     if article.password.is_some() && !visitor.has_article(&article.id).await? {
         return Ok(ArticleAccessibility::NeedPassword);
     }

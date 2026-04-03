@@ -6,8 +6,10 @@ use serde::{Deserialize, Serialize};
 pub enum ArticleStatus {
     /// 草稿
     Draft,
-    /// 私密
+    /// 私密：列表不显示，详情 404
     Private,
+    /// 隐藏：列表不显示，详情可访问
+    Hidden,
     /// 发布
     Published,
 }
