@@ -36,7 +36,7 @@ async fn main() -> anyhow::Result<()> {
 
     initialize_config()?;
 
-    initialize_logging()?;
+    let _guard = initialize_logging()?;
 
     let state = initialize_app_state().await?;
 
