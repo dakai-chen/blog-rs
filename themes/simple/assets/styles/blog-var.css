@@ -132,9 +132,9 @@
 
     --color-article-list-date: var(--color-text-secondary);
 
-    --color-article-hidden-link: rgb(26, 158, 86);
-    --color-article-hidden-link-hover: rgb(26, 158, 86);
-    --color-article-hidden-link-active: rgb(8, 110, 56);
+    --color-article-hidden-link: rgb(16, 128, 70);
+    --color-article-hidden-link-hover: rgb(16, 128, 70);
+    --color-article-hidden-link-active: rgb(6, 90, 45);
 
     --color-article-disabled-link: var(--color-link-disabled);
     --color-article-disabled-link-hover: var(--color-link-disabled-hover);
