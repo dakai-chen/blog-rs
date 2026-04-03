@@ -22,7 +22,7 @@ pub async fn login(
         return Ok(Redirect::to("/")?.into_response()?);
     }
     let context = PageContext::new(AdminLoginVo).admin(admin.map(Into::into));
-    Ok(Html(state.template.typed_render(&context)).into_response()?)
+    Html(state.template.typed_render(&context)).into_response()
 }
 
 #[boluo::route("/login", method = ["POST"])]

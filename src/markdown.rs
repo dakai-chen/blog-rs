@@ -44,7 +44,7 @@ pub fn render(markdown: &str) -> anyhow::Result<String> {
     let root = comrak::parse_document(&arena, markdown, &options);
 
     let mut html = String::new();
-    CustomFormatter::format_document_with_plugins(&root, &options, &mut html, &plugins, ())?;
+    CustomFormatter::format_document_with_plugins(root, &options, &mut html, &plugins, ())?;
 
     Ok(html)
 }

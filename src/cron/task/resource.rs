@@ -124,7 +124,7 @@ impl FileScanner {
             let Some(path) = entry.path().to_str() else {
                 continue;
             };
-            let path = match ResourcePath::from_absolute(&path) {
+            let path = match ResourcePath::from_absolute(path) {
                 Ok(path) => path,
                 Err(err) => {
                     tracing::warn!("{err}");

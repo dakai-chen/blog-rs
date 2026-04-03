@@ -87,10 +87,10 @@ impl PageLinksVo {
     fn build_link(base_url: &str, page: u64, search: &SearchArticleDto) -> String {
         let mut params = Vec::with_capacity(3);
 
-        if let Some(q) = &search.q {
-            if !q.is_empty() {
-                params.push(format!("q={}", urlencoding::encode(q)));
-            }
+        if let Some(q) = &search.q
+            && !q.is_empty()
+        {
+            params.push(format!("q={}", urlencoding::encode(q)));
         }
         if let Some(size) = search.size {
             params.push(format!("size={size}"));

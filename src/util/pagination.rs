@@ -65,7 +65,7 @@ impl PageNavigation {
                 None
             },
             current_page,
-            next: if current_page <= page_n - 1 {
+            next: if current_page < page_n {
                 Some((current_page + 1).max(1))
             } else {
                 None

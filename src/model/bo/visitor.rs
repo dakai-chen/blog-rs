@@ -93,8 +93,8 @@ impl<'a> VisitorArticleAccessPermitBo<'a> {
 
     pub async fn add_article(&self, article_id: &str) -> anyhow::Result<()> {
         let cache_id = VisitorArticleAccessPermitCoIdGen {
-            visitor_id: self.visitor_id.as_ref().into(),
-            article_id: article_id.into(),
+            visitor_id: self.visitor_id.as_ref(),
+            article_id,
         };
         let permit = Cache::builder(VisitorArticleAccessPermitCo)
             .id(&cache_id)
@@ -107,14 +107,12 @@ impl<'a> VisitorArticleAccessPermitBo<'a> {
     pub async fn has_article(&self, article_id: &str) -> anyhow::Result<bool> {
         let cache_id = VisitorArticleAccessPermitCoIdGen {
             visitor_id: self.visitor_id.as_ref(),
-            article_id: article_id,
+            article_id,
         };
         Cache::<VisitorArticleAccessPermitCo>::exists(cache_id.generate_id().as_ref()).await
     }
 
     pub async fn clear_article(&self) -> anyhow::Result<()> {
-        Cache::<VisitorArticleAccessPermitCo>::batch_remove(&self.visitor_id)
-            .await
-            .map_err(From::from)
+        Cache::<VisitorArticleAccessPermitCo>::batch_remove(&self.visitor_id).await
     }
 }
