@@ -22,6 +22,7 @@ mod validator;
 use std::env::VarError;
 use std::net::SocketAddr;
 use std::sync::Arc;
+use std::time::Duration;
 
 use boluo::server::{RunError, Server};
 use tokio::net::TcpListener;
@@ -42,12 +43,11 @@ async fn main() -> anyhow::Result<()> {
 
     initialize_storage(&state).await?;
 
-    cron::init(state.clone()).await?;
-    cron::start().await?;
+    initialize_cron(&state).await?;
 
-    start_http_server(state).await?;
+    start_http_server(&state).await?;
 
-    cron::shutdown().await?;
+    shutdown(state).await;
 
     Ok(())
 }
@@ -92,8 +92,27 @@ async fn initialize_storage(state: &Arc<AppState>) -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn start_http_server(state: Arc<AppState>) -> anyhow::Result<()> {
-    let app = app::build(state).await?;
+async fn initialize_cron(state: &Arc<AppState>) -> anyhow::Result<()> {
+    tracing::info!("初始化定时任务");
+    cron::init(state.clone()).await?;
+    cron::start().await?;
+    Ok(())
+}
+
+async fn shutdown(state: Arc<AppState>) {
+    tracing::info!("关闭定时任务");
+    if let Err(e) = cron::shutdown().await {
+        tracing::error!("关闭定时任务失败：{e}");
+    }
+    tracing::info!("关闭数据库连接池");
+    if let Err(e) = tokio::time::timeout(Duration::from_secs(3), state.db.close()).await {
+        tracing::error!("关闭数据库连接池超时：{e}");
+    }
+    tracing::info!("应用程序退出");
+}
+
+async fn start_http_server(state: &Arc<AppState>) -> anyhow::Result<()> {
+    let app = app::build(state.clone()).await?;
     let tcp = listen().await?;
 
     tracing::info!("HTTP 服务启动，监听地址：{}", tcp.local_addr()?);

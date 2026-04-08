@@ -15,22 +15,14 @@ pub fn get() -> &'static JobScheduler {
 }
 
 pub async fn start() -> anyhow::Result<()> {
-    tracing::info!("开始启动定时任务");
-    get().start().await?;
-    tracing::info!("定时任务启动完成");
-    Ok(())
+    get().start().await.map_err(From::from)
 }
 
 pub async fn shutdown() -> anyhow::Result<()> {
-    tracing::info!("开始关闭定时任务");
-    get().clone().shutdown().await?;
-    tracing::info!("定时任务关闭完成");
-    Ok(())
+    get().clone().shutdown().await.map_err(From::from)
 }
 
 pub async fn init(state: Arc<AppState>) -> anyhow::Result<()> {
-    tracing::info!("开始初始化定时任务");
-
     let scheduler = JobScheduler::new().await?;
 
     task::build(state)?.register_to(&scheduler).await?;
