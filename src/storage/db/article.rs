@@ -208,9 +208,14 @@ fn search_where_conditions(
         .map(|v| v.trim())
         .filter(|v| !v.is_empty())
     {
+        let fts_table_name = params
+            .full_text_public_only
+            .then_some("article_fts_public")
+            .unwrap_or("article_fts");
+
         sql_params.add(full_text).anyhow()?;
         conditions.push(format!(
-            "id IN (SELECT id FROM article_fts WHERE article_fts MATCH simple_query(?) LIMIT {})",
+            "id IN (SELECT id FROM {fts_table_name} WHERE {fts_table_name} MATCH simple_query(?) LIMIT {})",
             crate::config::get().article.full_text_search_limit
         ));
     }

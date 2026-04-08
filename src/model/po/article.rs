@@ -36,6 +36,8 @@ pub struct ArticlePo {
 pub struct SearchArticle<'a> {
     /// 全文搜索
     pub full_text: Option<Cow<'a, str>>,
+    /// 全文搜索是否只搜索公开文章
+    pub full_text_public_only: bool,
     /// 状态
     pub status: Option<ArticleStatus>,
     /// 发布时间（大于等于）

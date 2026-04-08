@@ -201,6 +201,7 @@ pub async fn search_article(
     let full_text = bo.trim_full_text();
     let params = SearchArticle {
         full_text: full_text.map(Cow::from),
+        full_text_public_only: admin.is_none(),
         status: if admin.is_some() {
             bo.status
         } else {
