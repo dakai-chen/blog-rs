@@ -92,6 +92,10 @@
     gap: 0.625rem;
 }
 
+.markdown li {
+    position: relative;
+}
+
 .markdown ul > li {
     list-style-type: disc;
 }
@@ -336,11 +340,14 @@
 .markdown li > input[type="checkbox"] {
     appearance: none;
     -webkit-appearance: none;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 0.75rem;
     height: 0.75rem;
     margin-right: 0.5rem;
     margin-left: -1.25rem;
+    margin-top: 0.525rem;
     border: 1px solid var(--color-md-checkbox-border);
     background: var(--color-md-checkbox-bg);
     outline: none;
