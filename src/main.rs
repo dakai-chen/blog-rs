@@ -24,7 +24,7 @@ use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Duration;
 
-use boluo::server::{RunError, Server};
+use boluo::server::{GracefulShutdown, RunError, Server};
 use tokio::net::TcpListener;
 use tracing_appender::non_blocking::WorkerGuard;
 
@@ -45,9 +45,9 @@ async fn main() -> anyhow::Result<()> {
 
     initialize_cron(&state).await?;
 
-    start_http_server(&state).await?;
+    let graceful = start_http_server(&state).await?;
 
-    shutdown(state).await;
+    shutdown(state, graceful).await;
 
     Ok(())
 }
@@ -99,32 +99,60 @@ async fn initialize_cron(state: &Arc<AppState>) -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn shutdown(state: Arc<AppState>) {
-    tracing::info!("关闭定时任务");
-    if let Err(e) = cron::shutdown().await {
-        tracing::error!("关闭定时任务失败：{e}");
-    }
-    tracing::info!("关闭数据库连接池");
-    if let Err(e) = tokio::time::timeout(Duration::from_secs(3), state.db.close()).await {
-        tracing::error!("关闭数据库连接池超时：{e}");
-    }
+async fn shutdown(state: Arc<AppState>, graceful: GracefulShutdown) {
+    let shutdown_http = async {
+        let shutdown_timeout = shutdown::timeout();
+        if let Some(timeout) = shutdown_timeout {
+            tracing::info!("关闭 HTTP 服务，等待活跃请求处理完成（超时时间：{timeout:?}）");
+        } else {
+            tracing::info!("关闭 HTTP 服务，等待活跃请求处理完成");
+        }
+        if graceful.shutdown(shutdown_timeout).await.is_err() {
+            tracing::warn!("关闭 HTTP 服务超时");
+        }
+    };
+
+    let shutdown_cron = async {
+        tracing::info!("关闭定时任务（超时时间：6s）");
+        match tokio::time::timeout(Duration::from_secs(6), cron::shutdown()).await {
+            Err(_) => tracing::error!("关闭定时任务超时"),
+            Ok(Err(e)) => tracing::error!("关闭定时任务失败：{e}"),
+            Ok(_) => {}
+        }
+    };
+
+    let shutdown_database = async {
+        tracing::info!("关闭数据库连接池（超时时间：6s）");
+        match tokio::time::timeout(Duration::from_secs(6), state.db.close()).await {
+            Err(_) => tracing::error!("关闭数据库连接池超时"),
+            Ok(_) => {}
+        }
+    };
+
+    tokio::join!(shutdown_http, shutdown_cron);
+    shutdown_database.await;
+
     tracing::info!("应用程序退出");
 }
 
-async fn start_http_server(state: &Arc<AppState>) -> anyhow::Result<()> {
+async fn start_http_server(state: &Arc<AppState>) -> anyhow::Result<GracefulShutdown> {
     let app = app::build(state.clone()).await?;
     let tcp = listen().await?;
 
     tracing::info!("HTTP 服务启动，监听地址：{}", tcp.local_addr()?);
-    if let Err(e) = Server::new(tcp)
-        .run_with_graceful_shutdown(app, shutdown::graceful())
+
+    let graceful = match Server::new(tcp)
+        .run_with_graceful_shutdown(app, shutdown::signal())
         .await
     {
-        handle_run_error(e).await;
-    }
-    tracing::info!("HTTP 服务已关闭");
+        Ok(graceful) => graceful,
+        Err(RunError::Listener(e, graceful)) => {
+            tracing::error!("HTTP 服务监听器发生错误: {e}");
+            graceful
+        }
+    };
 
-    Ok(())
+    Ok(graceful)
 }
 
 async fn listen() -> anyhow::Result<TcpListener> {
@@ -132,28 +160,4 @@ async fn listen() -> anyhow::Result<TcpListener> {
         bind_ip, bind_port, ..
     } = config::get().http;
     Ok(TcpListener::bind(SocketAddr::from((bind_ip, bind_port))).await?)
-}
-
-async fn handle_run_error<E>(error: RunError<E>)
-where
-    E: std::fmt::Display,
-{
-    match error {
-        RunError::GracefulShutdownTimeout => {
-            tracing::warn!("HTTP 服务优雅关闭超时");
-        }
-        RunError::Listener(e, graceful_shutdown) => {
-            tracing::error!("HTTP 服务监听失败: {e}");
-            if let Some(timeout) = shutdown::timeout() {
-                tracing::info!(
-                    "HTTP 服务开始优雅关闭，等待活跃请求处理完成（超时时间：{timeout:?}）"
-                );
-            } else {
-                tracing::info!("HTTP 服务开始优雅关闭，等待活跃请求处理完成");
-            }
-            if !graceful_shutdown.shutdown(shutdown::timeout()).await {
-                tracing::warn!("HTTP 服务优雅关闭超时");
-            }
-        }
-    }
 }

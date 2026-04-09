@@ -261,7 +261,7 @@ dependencies = [
 [[package]]
 name = "boluo"
 version = "0.7.0"
-source = "git+https://github.com/dakai-chen/boluo#23b68c1f53ff6cec9506de57d9182a21c931a5d8"
+source = "git+https://github.com/dakai-chen/boluo#1e78e5ab9d98a0b274effd82bf2efb4155a13fa3"
 dependencies = [
  "boluo-core",
  "boluo-macros",
@@ -285,7 +285,7 @@ dependencies = [
 [[package]]
 name = "boluo-core"
 version = "0.6.0"
-source = "git+https://github.com/dakai-chen/boluo#23b68c1f53ff6cec9506de57d9182a21c931a5d8"
+source = "git+https://github.com/dakai-chen/boluo#1e78e5ab9d98a0b274effd82bf2efb4155a13fa3"
 dependencies = [
  "bytes",
  "futures-core",
@@ -311,7 +311,7 @@ dependencies = [
 [[package]]
 name = "boluo-macros"
 version = "0.2.1"
-source = "git+https://github.com/dakai-chen/boluo#23b68c1f53ff6cec9506de57d9182a21c931a5d8"
+source = "git+https://github.com/dakai-chen/boluo#1e78e5ab9d98a0b274effd82bf2efb4155a13fa3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1155,9 +1155,9 @@ dependencies = [
 
 [[package]]
 name = "fastrand"
-version = "2.4.0"
+version = "2.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a043dc74da1e37d6afe657061213aa6f425f855399a11d3463c6ecccc4dfda1f"
+checksum = "9f1f227452a390804cdb637b74a86990f2a7d7ba4b7d5693aac9b4dd6defd8d6"
 
 [[package]]
 name = "ff"
@@ -3570,9 +3570,9 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 
 [[package]]
 name = "tokio"
-version = "1.51.0"
+version = "1.51.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2bd1c4c0fc4a7ab90fc15ef6daaa3ec3b893f004f915f2392557ed23237820cd"
+checksum = "f66bf9585cda4b724d3e78ab34b73fb2bbaba9011b9bfdf69dc836382ea13b8c"
 dependencies = [
  "bytes",
  "libc",

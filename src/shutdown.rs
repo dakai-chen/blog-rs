@@ -31,14 +31,3 @@ pub fn set_timeout(value: impl Into<Option<Duration>>) {
 pub fn timeout() -> Option<Duration> {
     *TIMEOUT.lock().unwrap_or_else(|e| e.into_inner())
 }
-
-pub async fn graceful() -> Option<Duration> {
-    signal().await;
-    let timeout = timeout();
-    if let Some(timeout) = timeout {
-        tracing::info!("HTTP 服务开始优雅关闭，等待活跃请求处理完成（超时时间：{timeout:?}）");
-    } else {
-        tracing::info!("HTTP 服务开始优雅关闭，等待活跃请求处理完成");
-    }
-    timeout
-}
