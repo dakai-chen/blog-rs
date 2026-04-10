@@ -37,13 +37,16 @@ END;
 CREATE TRIGGER IF NOT EXISTS article_fts_delete AFTER DELETE
 ON article
 BEGIN
-    DELETE FROM article_fts WHERE id = OLD.id;
+    INSERT INTO article_fts (article_fts, rowid, id, title, excerpt, plain_content)
+    VALUES ('delete', OLD.rowid, OLD.id, OLD.title, OLD.excerpt, OLD.plain_content);
 END;
 
 CREATE TRIGGER IF NOT EXISTS article_fts_update AFTER UPDATE
 ON article
 BEGIN
-    INSERT OR REPLACE INTO article_fts (rowid, id, title, excerpt, plain_content)
+    INSERT INTO article_fts (article_fts, rowid, id, title, excerpt, plain_content)
+    VALUES ('delete', OLD.rowid, OLD.id, OLD.title, OLD.excerpt, OLD.plain_content);
+    INSERT INTO article_fts (rowid, id, title, excerpt, plain_content)
     VALUES (NEW.rowid, NEW.id, NEW.title, NEW.excerpt, NEW.plain_content);
 END;
 
@@ -67,13 +70,18 @@ END;
 CREATE TRIGGER IF NOT EXISTS article_fts_public_delete AFTER DELETE
 ON article
 BEGIN
-    DELETE FROM article_fts_public WHERE id = OLD.id;
+    INSERT INTO article_fts_public (article_fts_public, rowid, id, title, excerpt, plain_content)
+    SELECT 'delete', OLD.rowid, OLD.id, OLD.title, OLD.excerpt, OLD.plain_content
+    WHERE OLD.status = 'Published' AND OLD.password IS NULL;
 END;
 
 CREATE TRIGGER IF NOT EXISTS article_fts_public_update AFTER UPDATE
 ON article
 BEGIN
-    INSERT OR REPLACE INTO article_fts_public (rowid, id, title, excerpt, plain_content)
+    INSERT INTO article_fts_public (article_fts_public, rowid, id, title, excerpt, plain_content)
+    SELECT 'delete', OLD.rowid, OLD.id, OLD.title, OLD.excerpt, OLD.plain_content
+    WHERE OLD.status = 'Published' AND OLD.password IS NULL;
+    INSERT INTO article_fts_public (rowid, id, title, excerpt, plain_content)
     SELECT NEW.rowid, NEW.id, NEW.title, NEW.excerpt, NEW.plain_content
     WHERE NEW.status = 'Published' AND NEW.password IS NULL;
 END;
