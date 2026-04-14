@@ -49,6 +49,9 @@
 {% block scripts %}
 {{ super() }}
 <script>
-    document.addEventListener('DOMContentLoaded', init_code_copy_btn);
+    document.addEventListener('DOMContentLoaded', () => {
+        init_code_copy_btn();
+        init_image_overlay();
+    });
 </script>
 {% endblock scripts %}

@@ -387,3 +387,39 @@
 .markdown .footnotes > *:last-child {
     margin-bottom: 0 !important;
 }
+
+/*******************************************************************************
+ * 图片放大
+ ******************************************************************************/
+
+.markdown img {
+    cursor: zoom-in;
+}
+
+.img-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.25s ease;
+    user-select: none;
+    overflow: hidden;
+}
+
+.img-overlay.show {
+    display: flex;
+}
+
+.img-overlay img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    transform-origin: center;
+    cursor: grab;
+}
