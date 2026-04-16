@@ -301,7 +301,7 @@ pub fn into_app_error(error: BoxError) -> AppError {
     if let Some(e) = error.downcast_ref::<ServeFileError>() {
         return match e {
             ServeFileError::NotFound => AppErrorMeta::HttpNotFound.into(),
-            ServeFileError::IO(_) => AppErrorMeta::Internal.with_source(error),
+            ServeFileError::Io(_) => AppErrorMeta::Internal.with_source(error),
         };
     }
 
