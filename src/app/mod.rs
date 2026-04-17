@@ -7,6 +7,7 @@ use std::sync::Arc;
 use boluo::BoxError;
 use boluo::data::Extension;
 use boluo::http::StatusCode;
+use boluo::middleware::{filter_fn_with_state, middleware_fn};
 use boluo::request::Request;
 use boluo::response::{Html, IntoResponse, Response};
 use boluo::route::Router;
@@ -18,6 +19,7 @@ use crate::error::AppErrorMeta;
 use crate::middleware::error::OrElseWith;
 use crate::middleware::limit::BodyLimit;
 use crate::middleware::logger::{Logger, LoggerSpan};
+use crate::middleware::mime::mime_with_charset;
 use crate::middleware::request_id::RequestIdMiddleware;
 use crate::middleware::visitor::VisitorMiddleware;
 use crate::model::vo::article::UnlockArticleVo;
@@ -29,7 +31,7 @@ pub async fn build(
     state: Arc<AppState>,
 ) -> anyhow::Result<impl Service<Request, Response = impl IntoResponse, Error = BoxError>> {
     Ok(Router::new()
-        .merge_with(build_static_file(), OrElseWith::new(error_to_status_code))
+        .merge_with(build_static_file(), middleware_fn(static_file_middleware))
         .merge_with(build_download(), OrElseWith::new(error_to_status_code))
         .merge_with(build_web(), OrElseWith::new(error_to_status_code))
         .scope_merge("/api/", build_api())
@@ -43,12 +45,12 @@ pub async fn build(
 }
 
 fn build_static_file() -> Router {
-    let theme_assets = ServeDir::new(&crate::config::get().theme.current().assets_dir);
-    let public = ServeDir::new(&crate::config::get().resource.public_dir);
+    let theme_assets_dir = &crate::config::get().theme.current().assets_dir;
+    let public_dir = &crate::config::get().resource.public_dir;
 
     Router::new()
-        .scope("/theme/assets/{*}", theme_assets)
-        .scope("/{*}", public)
+        .scope("/theme/assets/{*}", ServeDir::new(theme_assets_dir))
+        .scope("/{*}", ServeDir::new(public_dir))
 }
 
 fn build_download() -> Router {
@@ -138,4 +140,15 @@ async fn error_to_status_code(
             .typed_render(&PageContext::new(ErrOtherVo::from(&app_error))),
     };
     (app_error.meta().status_code(), Html(html)).into_response()
+}
+
+fn static_file_middleware<S>(
+    service: S,
+) -> impl Service<Request, Response = Response, Error = BoxError>
+where
+    S: Service<Request, Response = Response, Error = BoxError> + 'static,
+{
+    service
+        .with(filter_fn_with_state("utf-8", mime_with_charset))
+        .with(OrElseWith::new(error_to_status_code))
 }
